@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Walking Linkage Optimization</title>
+  </head>
+
+  <body>
+    <h1>Walking Linkage Optimization</h1>
+
+The <TT>OptWalker</TT> class is a front end for optimizing
+the dimensions of a walking linkage.
+It has been use primarily for Jansen, but had been used for Klann
+in the past, and could be used for others.
+
+<P>It is research grade code, and I tended to just poke
+parameters into the optimizer using the debugger, rather than
+write proper I/O.
+
+<P>The main parameters of interest are in <TT>WalkerMetric a</TT> :
+<DL compact><DT><TT>_contactThresh</TT></DT>
+<DD>Amount above lowest point of cycle to be considered above the ground.
+Within this distance of the lowest point of the walking cycle, the foot
+is considered to be close enough to be touching the ground.</DD>
+
+<DT><TT>_dutyCycleWeight</TT></DT>
+<DD>Multiplier for how important the active walking part of the cycle is.
+Larger numbers tend to place a greater percentage of the cycle with the foot
+"on the ground".</DD>
+
+<DT><TT>_lenWeight</TT></DT>
+<DD>Multiplier for how important the length of the active part of the walking cycle is.</DD>
+
+<DT><TT>_reachWeight</TT></DT>
+<DD>Multiplier for how important it is that the closest point on the walking cycle is far away from the center of the linkage.
+i.e. How far out is the minimum reach of the foot.</DD>
+
+<DT><TT>_stepHeightWeight</TT></DT>
+<DD>Weight for how important it is that the foot step high above the ground
+when in its return cycle. (The height of each step)</DD>
+
+<DT><TT>_stepMetric._heightWeight</TT></DT>
+<DD>Weight for how important the flatness of the active part of the step is.
+A lower number (like 0.2) allows more curvature/oscillation in step height while the foot is in contact with the ground.
+A higher number (like 2) tries to make the walking phase of the orbit flatter.</DD>
+
+<DT><TT>_trackWeight</TT></DT>
+<DD>Weight for how important it is that the walking (on ground) phase of
+the orbit be shaped like a tank track.
+We try to make the bottom part of the step curve up at the edges
+like a tank track on a pulley, and the bottom part of the tread be flat.</DD>
+</DL>
+
+While running, there are a few local variables that I often change
+in <TT>main</TT> to control the run :
+<DL compact><DT><TT>best</TT>
+<DD>Set this to a low number to force new output for a maxima.
+Sometimes when we get degenerate high metrics, it will stop saving
+possible optimizations until this parameter relaxes to a more reasonable value.
+Resetting this to a small number forces optimization output to start again.
+</DD>
+<DT><TT>reset</TT>
+<DD>Set this to <TT>true</TT> to re-start the whole search from the
+seed linkage configuration</DD>
+</DL>
+
+
+
+    <hr>
+    <address><a href="mailto:aaron@kestrel">Aaron Birenboim</a></address>
+<!-- Created: Thu May 16 16:46:28 MDT 2013 -->
+<!-- hhmts start -->
+Last modified: Thu May 16 17:04:35 MDT 2013
+<!-- hhmts end -->
+  </body>
+</html>
