@@ -188,18 +188,26 @@ difference() { union() {
 }
 
 // custom support
+sW=0.41;  // support width
+sH=4.4;  // support height
+sH2=sH/2;
 color("Cyan") union() {
-  translate([-28,1,2.2]) rotate([0,0,10]) cube([0.35,8,4.4],center=true);
-  translate([-29.5,0,2.2]) rotate([0,0,5]) cube([0.35,9,4.4],center=true);
-  translate([-31,0,2.2]) rotate([0,0,5]) cube([0.35,9,4.4],center=true);
-  translate([-32.5,0,2.2]) rotate([0,0,5]) cube([0.35,10,4.4],center=true);
-  translate([-34,0,2.2]) rotate([0,0,5]) cube([0.35,10,4.4],center=true);
-  translate([-35.5,0,2.2]) rotate([0,0,5]) cube([0.35,10,4.4],center=true);
-  translate([-37,0,2.2]) rotate([0,0,5]) cube([0.35,9,4.4],center=true);
-  translate([-36.5,-2.5,2.2]) rotate([0,0,40]) cube([0.35,7,4.4],center=true);
-  translate([-36.5,2.5,2.2]) rotate([0,0,-40]) cube([0.35,7,4.4],center=true);
-  translate([-30,-2.5,2.2]) rotate([0,0,10]) cube([8,0.35,4.4],center=true);
-  translate([-31,3.5,2.2]) rotate([0,0,-10]) cube([8,0.35,4.4],center=true);
+  translate([-28,1,sH2]) rotate([0,0,10]) cube([sW,8,sH],center=true);
+  translate([-29.5,0,sH2]) rotate([0,0,5]) cube([sW,9,sH],center=true);
+  translate([-31,0,sH2]) rotate([0,0,5]) cube([sW,9,sH],center=true);
+  translate([-32.5,0,sH2]) rotate([0,0,5]) cube([sW,10,sH],center=true);
+  translate([-34,0,sH2]) rotate([0,0,5]) cube([sW,10,sH],center=true);
+  translate([-35.5,0,sH2]) rotate([0,0,5]) cube([sW,10,sH],center=true);
+  translate([-37,0,sH2]) rotate([0,0,5]) cube([sW,9,sH],center=true);
+  translate([-36.5,-2.5,sH2]) rotate([0,0,40]) cube([sW,7,sH],center=true);
+  translate([-36.5,2.5,sH2]) rotate([0,0,-40]) cube([sW,7,sH],center=true);
+  translate([-30,-2.5,sH2]) rotate([0,0,10]) cube([8,sW,sH],center=true);
+  translate([-31,3.5,sH2]) rotate([0,0,-10]) cube([8,sW,sH],center=true);
+  hull() {
+    translate([-34,0,0]) cylinder(r1=2,r2=5,h=3.6,$fn=11);
+    translate([-29,0.5,0]) rotate([0,0,15])
+        scale([1,3,1]) cylinder(r1=.3,r2=1.5,h=3.6,$fn=6);
+  }
 }
 
 }
