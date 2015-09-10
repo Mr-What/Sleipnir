@@ -40,41 +40,44 @@ translate([0,0,23]) cylinder(h=2.5,r=3.5,$fn=36);
 translate([1.5,-3,23.5+3]) cube([2,6,8]);
 }}
 
-bh=5;
-br1=2.2;
-br2=2;
+bh=4;
+br1=2;
+br2=1.5;
 
 module ulc(dx,dy) { translate([-20+dx,-1.5+dy,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
 module urc(dx,dy) { translate([ 20+dx,-1.5+dy,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
-module llc() { translate([ -6, -30,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
-module lrc() { translate([  6, -30,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
+module llc() { translate([ -6, -30,0]) cylinder(h=bh+2,r1=br1,r2=.5,$fn=6); }
+module lrc() { translate([  6, -30,0]) cylinder(h=bh+2,r1=br1,r2=.5,$fn=6); }
 
-module motorMount() { difference() { union() {
-//hull() { translate([-22,-1.5,0]) cube([44,2,5]);
-//          translate([ -8,-32 ,0]) cube([16,1,5]); }
-hull() { ulc(0,0); urc(0,0); }
-hull() { ulc(2,-2); urc(-2,-2); }
-//hull() { llc(); lrc(); }
-hull() { ulc(0,0); llc(); }
-hull() { urc(0,0); lrc(); }
-hull() { translate([ 0, -3,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6);
-         translate([-7,-22,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
-hull() { translate([ 0, -3,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6);
-         translate([ 7,-22,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
-//translate([-17,-5,0]) cylinder(h=bh,r1=4.2,r2=4,$fn=6);
+dtFuzz = 0.08;  // fuzz to add to dove tail slots
 
-//translate([-8,-30,0]) cube([16,13,5]);
-hull() {
-   translate([-5,-24,0]) cylinder(h=bh*2,r1=3.2,r2=3,$fn=6);
-   translate([-4,-32,0]) cylinder(h=20  ,r1=4.6,r2=4,$fn=6);
+module motorMount() {
+  difference() {
+    union() {
+      hull() { ulc(0,0); urc(0,0); }
+      hull() { ulc(2,-1); urc(-2,-1); }
+      hull() { ulc(0,0); llc(); }
+      hull() { urc(0,0); lrc(); }
+      for (a=[-1,1]) hull() { 
+        translate([.6*a, -2,0]) cylinder(h=bh  ,r1=2,r2=0.5,$fn=6);
+        translate([ 7*a,-25,0]) cylinder(h=bh+2,r1=2,r2=0.5,$fn=6);
+      }
 
-   translate([ 5,-24,0]) cylinder(h=bh*2,r1=3.2,r2=3,$fn=6);
-   translate([ 4,-32,0]) cylinder(h=20  ,r1=4.6,r2=4,$fn=6);
-}}
-#translate([0,-30,3.9]) gearheadMotorProxyGA12(0.4);
-translate([ 10,0,0.8]) rotate([0,0,-30]) cylinder(h=4.4,r2=4+.4,r1=3+.2,$fn=3);
-translate([-10,0,0.8]) rotate([0,0,-30]) cylinder(h=4.4,r2=4+.4,r1=3+.2,$fn=3);
-}}
+      hull() for (a=[-1,1]) {
+        translate([5*a,-24,0]) cylinder(h=bh*2,r1=3.2,r2=3,$fn=6);
+        translate([4*a,-32,0]) cylinder(h=20  ,r1=4.6,r2=4,$fn=6);
+      }
+    }
+
+    // dove-tail receivers, 2x as high as actual, with 2x radius reduction
+    // so they have the same wall slope, but are extra long to make
+    // sure they cut all the way through the top brace bar
+    for (a=[-1,1]) translate([10*a,-1,1-0.1]) rotate([0,0,-30])
+       cylinder(h=6,r2=5+dtFuzz,r1=3+dtFuzz,$fn=3);
+
+    #translate([0,-30,3.9]) gearheadMotorProxyGA12(0.4);
+  }
+}
 
 if (WITH_BRIM) {
 union() { color("Cyan") hull() {
