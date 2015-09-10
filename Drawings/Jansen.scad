@@ -8,11 +8,12 @@
 //
 // Combined parts with pads, optimized for RepRap :
 // Hip, Feet, crankLinks, EFs, BHs    : main, pulley, drivePulley as above (brace)
-PART="FootA";
+PART="HipA";
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
 echo(str("PART=",PART));
 
-HoleFuzz = 0.2;  // extra radius (mm) to add to holes to account for printer slop
+HoleFuzz = 0.1;  // extra radius (mm) to add to holes to account for printer slop
+dHoleFuzz = 0.2;  // extra radius (mm) to add to d-shaft holes.  Sometimes not the same as HoleFuzz since it is harder to clean D-shaft holes
 
 // measured diameter of '3/16"' spacer was 4.74 to 4.76, not 4.7625 as expected.
 // Current design:  3/16" axles at B
@@ -358,8 +359,8 @@ else if (PART=="pulley_pad") { union() { footpad(23); translate([0,0,.2])
                             pulley(18,5,rad4,0); }}
 else if (PART=="pulley") {  pulley(18,5,rad4,0); }
 else if (PART=="drivePulley_pad") { union() { footpad(15); translate([0,0,.2])
-                                pulley(10,4,1.5+.3,1+.3); }}
-else if (PART=="drivePulley") { pulley(10,4,1.5+.3,1+.3); }
+                                pulley(10,4,1.5+dHoleFuzz,1+dHoleFuzz); }}
+else if (PART=="drivePulley") { pulley(10,4,1.5+dHoleFuzz,1+dHoleFuzz); }
 else if (PART=="mainBar") {  mainBar(Bx,Ay); }
 else if (PART=="main") { mainBar_pad(Bx,Ay); }
 else if (PART=="braceBar") {  brace(2*Bx,8,Brad); }
