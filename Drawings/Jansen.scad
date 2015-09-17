@@ -349,7 +349,7 @@ else if (PART=="CD"   ) crankLink(CD,15,Drad); // build 2
 else if (PART=="EF"   ) monoBracedLinkage(EF); // build 4
 else if (PART=="EFs"  ) EFs(EF);
 else if (PART=="BHs"  ) BHs(BH,2.5*NodeHeight,Brad+1.8,BradFree,ForkHeight,Hrad+2,rad4);
-else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight,Brad+1.8,BradFree,ForkHeight,Hrad+2,rad4); // build 4, glue them together with a rectangle if desired
+else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight+1.5,Brad+1.8,BradFree,ForkHeight,Hrad+2,rad4); // build 4, glue them together with a rectangle if desired
 else if (PART=="AC"   ) crankArm(AC,acH0,acOR,acIR,acH1,acOR,acIR); 
 else if (PART=="halfPulley") { union() { color("Cyan") footpad(pulleyR+7);
        translate([0,0,.2]) halfPulley(pulleyR,2.5,AradTight,-1); }}
