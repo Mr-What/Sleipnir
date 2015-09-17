@@ -59,7 +59,7 @@ module forkTab(h,r1,r2,len) {
 difference(){
 hull() { cylinder(h=h,r1=r1,r2=r2,$fn=48);
   translate([len+2,0,0]) cylinder(h=2,r1=2,r2=1,$fn=12); }
-translate([len,0,-.1]) cylinder(h=3*NodeHeight,r=.6,$fn=6);
+translate([len,0,-1]) cylinder(h=3*NodeHeight,r=.8,$fn=6);
     drillHole(rad4);
 }}
 
@@ -158,6 +158,18 @@ difference() { union() {
 
    translate([0,dPerp,0])
       cylinder(h=perpHeight,r1=Brad+2.4,r2=Brad+1.8,$fn=48);
+
+   // more bracing for fork
+   hull() {
+     translate([-dLeft+8,0,0]) cylinder(r=3,h=NodeHeight+3,$fn=6);
+     translate([-dLeft+17,11,0]) cylinder(r=2,h=1,$fn=6);
+   }
+   hull() {
+     translate([-dLeft+1,-1.5,0]) cylinder(r=2,h=NodeHeight+3.5,$fn=6);
+     translate([-dLeft+8,-1,0]) cylinder(r=3,h=NodeHeight+3,$fn=6);
+     translate([-dLeft+21,0,0]) cylinder(r=2,h=1,$fn=6);
+   }
+   
    }   // end second union
 
    //------------- main holes/knock outs
@@ -172,15 +184,15 @@ difference() { union() {
          difference() { cube([28,33,2*(NodeHeight+.3)],center=true);
             hull() {
               translate([Drad+7,1,0]) cylinder(h=NodeHeight+.31,r=3,$fn=16);
-              translate([Drad+14,2,0]) cylinder(h=NodeHeight+3,r=5,$fn=6);
-              translate([Drad+14,10,0]) cylinder(h=NodeHeight+3,r=5,$fn=6);
+              translate([Drad+9,-6,0]) cylinder(h=NodeHeight+3,r=5,$fn=6);
+              translate([Drad+13.5,10,0]) cylinder(h=NodeHeight+3,r=8,$fn=6);
             }
          }
       }
       drillHole(rad4);
 
       // drill hole to help allign fork linkage, must match linkage length below
-      rotate([0,0,5]) translate([forkLen,0,0]) cylinder(h=3*NodeHeight,r=.6,$fn=6);
+      rotate([0,0,5]) translate([forkLen,0,-1]) cylinder(h=3*NodeHeight,r=.8,$fn=6);
    }
 
   // diagnostic slice to examine walls
@@ -192,21 +204,29 @@ sW=0.41;  // support width
 sH=4.4;  // support height
 sH2=sH/2;
 color("Cyan") union() {
+/* stuff parallel to perimiter adhered too well
   translate([-28,1,sH2]) rotate([0,0,10]) cube([sW,8,sH],center=true);
-  translate([-29.5,0,sH2]) rotate([0,0,5]) cube([sW,9,sH],center=true);
+  //translate([-29.5,0,sH2]) rotate([0,0,5]) cube([sW,9,sH],center=true);
   translate([-31,0,sH2]) rotate([0,0,5]) cube([sW,9,sH],center=true);
-  translate([-32.5,0,sH2]) rotate([0,0,5]) cube([sW,10,sH],center=true);
+  //translate([-32.5,0,sH2]) rotate([0,0,5]) cube([sW,10,sH],center=true);
   translate([-34,0,sH2]) rotate([0,0,5]) cube([sW,10,sH],center=true);
-  translate([-35.5,0,sH2]) rotate([0,0,5]) cube([sW,10,sH],center=true);
+  //translate([-35.5,0,sH2]) rotate([0,0,5]) cube([sW,10,sH],center=true);
   translate([-37,0,sH2]) rotate([0,0,5]) cube([sW,9,sH],center=true);
   translate([-36.5,-2.5,sH2]) rotate([0,0,40]) cube([sW,7,sH],center=true);
   translate([-36.5,2.5,sH2]) rotate([0,0,-40]) cube([sW,7,sH],center=true);
   translate([-30,-2.5,sH2]) rotate([0,0,10]) cube([8,sW,sH],center=true);
   translate([-31,3.5,sH2]) rotate([0,0,-10]) cube([8,sW,sH],center=true);
+*/
   hull() {
-    translate([-34,0,0]) cylinder(r1=2,r2=5,h=3.6,$fn=11);
-    translate([-29,0.5,0]) rotate([0,0,15])
-        scale([1,3,1]) cylinder(r1=.3,r2=1.5,h=3.6,$fn=6);
+    translate([-34,0,0]) cylinder(r1=3,r2=5,h=2,$fn=11);
+    #translate([-29,0.5,0]) scale([1,5,1])
+        cylinder(r1=.3,r2=1,h=2,$fn=6);
+  }
+  translate([-34,0,sH-1.5]) {
+    translate([3.6,0,0]) cube([5,sW,2],center=true);
+    for (a=[-30,30]) rotate([0,0,a]) translate([4,0,0]) cube([6,sW,3],center=true);
+    for (a=[60:30:322]) rotate([0,0,a])
+      translate([3,0,0]) cube([4,sW,3],center=true);
   }
 }
 
@@ -246,7 +266,8 @@ module BED1(dLeft,dBase,dPerp) { //------------------------------------ BED
 BED1main(dLeft,dBase,dPerp);
 
 // add other side of fork
-translate([-dLeft+0.7*forkLen,1.2*forkLen,0]) rotate([0,0,40])
+//translate([-dLeft+0.7*forkLen,1.2*forkLen,0]) rotate([0,0,40])
+translate([-10,8,0]) rotate([0,0,55])
     forkTab(ForkHeight+.1,Drad+2,rad4+1.4,forkLen);
 }
 
