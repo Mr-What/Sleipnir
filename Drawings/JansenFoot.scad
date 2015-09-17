@@ -125,7 +125,7 @@ if(0) {
 }
 
 // Support blade for H node
-lineW = 0.38;  // single line width
+lineW = 0.41;  // single line width
 plateH = NodeHeight-2-padH*0.2;
 module Hblade(len=3,h=plateH,w=lineW,cr=2) {
   translate([cr,-w/2,0]) cube([len,w,h]);
