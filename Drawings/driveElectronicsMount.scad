@@ -5,11 +5,11 @@
 
 
 Bhole=2.38+.2;  // for brass tube
-PCBhole = 1;
+PCBhole = (25.4*3/32)/2;//1;  // found that 3/32" drill made good pilot for #4 self-piloting screw
 include <JansenDefs.scad>;  // Bx 
 layer1bias = 0.4;
-platformHeight = 40;
-mountHeight=15;
+platformHeight = 45; // from bar to top platform
+mountHeight=15; // from bar to electronics platform
 PCBwidth=43;
 HoleInset=3;
 
@@ -35,7 +35,7 @@ module braceBar(axisSep,axisRad) { difference() { union() {
    //    cylinder(h=thick,r1=4,r2=3,$fn=6);
    hull() for (a=[-1,1]) translate([a*axisSep,-axisRad+.5,0])
       intersection() {
-         #translate([0,0,2.5]) scale([4,3.5,3.5]) sphere(1,$fn=24);
+         translate([0,0,2.5]) scale([4,3.5,3.5]) sphere(1,$fn=24);
          translate([0,0,t2]) cube([22,22,thick],center=true);
       }
 
@@ -64,17 +64,22 @@ module braceCutOut1(pw,mh,dh) {
 
 module braceCutOut(pw,mh,dh) {
     translate([-pw+dh,mh,0]) hull() {
-       translate([0,0,11]) sphere(r=2.2,$fn=22);
-       translate([0,0,4]) scale([3.5,3,2]) sphere(r=1,$fn=22);
+       translate([0,0,11-1]) sphere(r=2.2,$fn=22);
+       translate([0,0,5]) scale([2.5,4,2]) sphere(r=1,$fn=22);
     }
 
     for(b=[-1,1]) hull() {
-      translate([-pw+dh-4*b,mh,13]) sphere(r=2.2,$fn=22);
-      translate([-pw+dh-7.5*b,mh,5]) sphere(r=3,$fn=22);
+      translate([-pw+dh-4*b,mh,13-2]) sphere(r=2.2,$fn=22);
+      translate([-pw+dh-6.5*b,mh,5]) sphere(r=2.8,$fn=22);
     }
 }
 
+thinWall=0.41;  // width of thinnest wall which will not get culled by slicer
+
+
 module mountBrace(pw,mh,dh) {
+mountInset = 16;  // dist above z axis for PCB mount hole
+mountSphereRad=6;
   union() {
     difference() {
       hull() {
@@ -82,8 +87,8 @@ module mountBrace(pw,mh,dh) {
         translate([-4    ,mh, 2]) sphere(r=2,$fn=sf);
         //translate([-pw+dh,mh,16]) rotate([90,0,0])
         //  cylinder(h=4,r=5,$fn=26,center=true);
-        translate([-pw+dh,mh,16]) intersection() {
-           scale([6,4,6]) sphere(r=1,$fn=24);
+        translate([-pw+dh,mh,mountInset+HoleInset-mountSphereRad]) intersection() {
+           scale([1,.6,1]) sphere(r=mountSphereRad,$fn=24);
            cube([15,4,15],center=true);
         }
       }
@@ -95,8 +100,8 @@ module mountBrace(pw,mh,dh) {
     // makes it more stable, easier to print, and can be remioved
     // if desired.
     #hull() {
-      translate([-pw+dh,mh,16]) cube([9,.35,2],center=true);
-      translate([-pw/2-7,mh,2]) cube([pw+10,.35,1],center=true);
+      translate([-pw+dh,mh,16]) cube([8,thinWall,2],center=true);
+      translate([-pw/2-7,mh,2]) cube([pw+10,thinWall,1],center=true);
     }
   }
 }
@@ -131,7 +136,7 @@ hull() {
    mirror([1,0,0]) mountBrace(platWidth/2,mountHeight,dHole);
                    mountBrace(platWidth/2,mountHeight,dHole);
 
-   hull() for(a=[-1,1]) translate([a*(platWidth/2+13),mountHeight,2])
+   hull() for(a=[-1,1]) translate([a*(platWidth/2+15),mountHeight,2])
       sphere(r=2.4,$fn=sf);
 
    for (a=[-1,1]) hull() {  // side diag rails
@@ -141,7 +146,7 @@ hull() {
    translate([-platWidth*.35,platHeight-2,0]) cube([platWidth*.7,4,8]);
    }
 
-   for (a=[-1,1]) translate([a*(platWidth/2-dHole),mountHeight,16])
+   for (a=[-1,1]) translate([a*(platWidth/2-dHole),mountHeight,14.5])
       rotate([90,0,0]) cylinder(h=10,r=rHole,$fn=80,center=true);
 }}
 
