@@ -14,6 +14,7 @@ require 'JansenDefs.pl';
 
 # ponoko laser cutting sheets come in 181x181mm, 384x384mm, 384 wide x 790mm long
 ($wPx,$hPx) = &parseSizeFromFileName($0);  # get this from file name to make SURE it matches
+print STDERR "$wPx X $hPx\n";
 
 &printPonokoHeader($wPx,$hPx,$preview);
 

@@ -143,12 +143,14 @@ sub parseSizeFromFileName() {
     local ($w,$h) = (384,384);
     $_ = $fNam;
     chomp;
+print STDERR "FileName : $_\n";
+    s/^[\.\/\\]+//;
     s/\..*$//;
     local @a = split /x/;
     if ($#a < 1) { return($w,$h); } 
     $h = $a[$#a];
     $_ = $a[$#a-1];
-#print STDERR "before h=$_ h=$h\n";
+print STDERR "before h=$_ h=$h\n";
     @a = split /[a-zA-Z_\+\-\s\.]/;
     if ($#a < 0) { return($w,$h); } 
     $w = $a[$#a];
@@ -867,6 +869,11 @@ sub printMotorGear() {
 
     # can print after rest of gear, since not a high-precision hole
     &plotCircle($x0+$dAccessHole,$y0,4.2,15);
+
+    # for mounting on bobbin/hub.  Let user delete what they DON'T want
+    # in production
+    &plotCircle($x0,$y0,8.08/2,32);
+    &plotCircle($x0-5.4,$y0,1,9);
 }
 
 require 'involuteGear.pl';
