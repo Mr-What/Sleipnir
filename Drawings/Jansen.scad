@@ -8,7 +8,7 @@
 //
 // Combined parts with pads, optimized for RepRap :
 // Hip, Feet, crankLinks, EFs, BHs    : main, pulley, drivePulley as above (brace)
-PART="HipA";
+PART="BH";
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
 echo(str("PART=",PART));
 
@@ -348,8 +348,9 @@ else if (PART=="CH"   ) crankLink(CH,15,Hrad); // build 2
 else if (PART=="CD"   ) crankLink(CD,15,Drad); // build 2
 else if (PART=="EF"   ) monoBracedLinkage(EF); // build 4
 else if (PART=="EFs"  ) EFs(EF);
-else if (PART=="BHs"  ) BHs(BH,2.5*NodeHeight,Brad+1.8,BradFree,ForkHeight,Hrad+2,rad4);
-else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight+1.5,Brad+1.8,BradFree,ForkHeight,Hrad+2,rad4); // build 4, glue them together with a rectangle if desired
+// make small end of BH a little shorter to make it easier to use a 1" screw for 'hamstirng' node
+else if (PART=="BHs"  ) BHs(     BH,2.5*NodeHeight+1.5,Brad+1.8,BradFree,3.7,Hrad+2,rad4);
+else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight+1.5,Brad+1.8,BradFree,3.7,Hrad+2,rad4); // build 4, glue them together with a rectangle if desired
 else if (PART=="AC"   ) crankArm(AC,acH0,acOR,acIR,acH1,acOR,acIR); 
 else if (PART=="halfPulley") { union() { color("Cyan") footpad(pulleyR+7);
        translate([0,0,.2]) halfPulley(pulleyR,2.5,AradTight,-1); }}
