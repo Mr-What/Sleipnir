@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Building Mr. What's Walking Linkage</title>
+  </head>
+
+  <body bgcolor=#ccccff style="font-family:helvetica">
+<H6 align=right>$URL: svn+ssh://mrwhat@ssh.boim.com/home/mrwhat/svn/Walker/trunk/Building3D.html $
+<BR>$Id: Building3D.html 316 2013-11-07 20:17:50Z mrwhat $</H6>
+    <h1>Building standoff-hinged Walking Linkage, 3D printed</h1>
+<P>
+<IMG align="right" SRC="JansenLinkages.png" width="500">
+This drawing will help explain my conventions for naming parts
+of the linkage:
+</P>
+
+<P>For a complete chassis hardware setup, using 3/16" OD standoff hinges you will want :
+<UL><LI>(2) gearhead motors</LI>
+<LI>motor driver module</LI>
+<LI>(2) 3/16" OD brass tubes or steel rods, 1 foot long</LI>
+<LI>CA cement, gap filling, medium-viscosity
+<LI>(16) 1/2" long, 3/16" OD standoffs for #4-40 screws</LI>
+<LI>(24) 3/16" long, 3/16" OD standoffs for #4-40 screws</LI>
+<LI>(2) #4-40 0.25 to 0.75 inch threaded rods.
+<BR>Can be made by cutting the head off of a screw, and then cleaning the threads.
+<LI>(76) 5/16" long #4-40 pan or round-head screws</LI>
+<LI>(74+) #4 flat washers
+<LI>(4) #4 larger diameter flat washers, if available.  (standard diameter is OK)
+<BR>If washers are thin, may need to double some for clearance on 5/16" #4-40 screws, or replace some 5/16" screws with 1/4"</LI>
+<LI>(74) #4 internal tooth lockwashers</LI>
+</UL>
+</P>
+<P>The 3/16" OD standoffs are fairly rare.
+I can sell some for slightly above cost.
+I intend to offer full hardware packages, including these standoffs, soon.
+</P>
+
+<H2>Drills</H2>
+After 3D printing the linkage, holes may need to be precision drilled.
+
+<TABLE BORDER>
+<TR><TH>Bit</TH><TH>Notes</TH></TD></TR>
+
+<TR><TH>#10</TH>
+<TD>free on 3/16" OD axle and standoffs</TD></TR>
+
+<TR><TH>#11</TH>
+<TD>[optional.  #10 should work]<BR>free on 3/16" OD axle and standoffs, if "polished" after drill</TD></TR>
+
+<TR><TH>#12</TH>
+<TD>Snug (but not press-fit) on 3/16" OD, good for non-moving connections to B-axle</TD></TR>
+
+<TR><TH>#35</TH>
+<TD>snug, but free around #4-40 screw</TD></TR>
+</TABLE>
+
+<H2>Chassis assembly</H2>
+Chassis assembly is organized in four steps:
+<OL>
+<LI><A HREF="PartsPrep3D.html">Parts preparation</A></LI>
+<LI><A HREF="GluedParts3D.html">Glued parts</A></LI>
+<LI><A HREF="LegAssembly3D.html">Leg sub-assemblies</A></LI>
+<LI><A HREF="PayloadAssembly3D.html">Payload assembly</A>
+<LI><A HREF="MainAssembly3D.html">Main chassis integration</A></LI>
+</OL>
+
+This completes the base of a fairly typical robot chassis, with dual motor control.
+
+<P>I will be publishing my design for running this chassis over a Bluetooth remote
+control soon.
+It uses an open-source Android app to send control commands to a Bluetooth receiver,
+attached to an Arduino nano compatible microcontroller module.
+The motors are controlled from a fairly common LM298 based motor control module.
+
+<P>Recommended assembly order:
+  <OL><LI>Print and glue parts that need to be glued.
+      <OL type="a"><LI><B>Print pulleys and crank arms (AC)</B>.
+	  <BR>2 main pulleys, 2 motor pulleys, 4 (AC) crank arms.</LI>
+	<LI><B>Print main bars (4)</B></LI>
+	<LI><B>Print motor mounts (2)</B></LI>
+	<LI>Glue motor mounts to main bars</LI>
+	<LI>Glue standoffs to main pulley (for each side)</LI>
+	<LI>Assemble main pulley into main bar (twice, once for each side)</LI>
+	<LI>Glue crankarms (AC) onto main pulley standoffs.
+	  <BR>Make sure they are glued/locked at level 180 degree phase.</LI>
+	<LI><B>Print hips</B></LI>
+	<LI>Glue forks onto Hips.</LI>
+      </OL>
+
+    <LI>Print rest of one pair of leg assemblies
+      <UL>
+	<LI>You should have already printed and glued all 8 hip parts, 4 of each of the 2 mirror symmetries.
+	  <BR>You will need one of each of the symmetries to build a leg pair.
+	  <B>
+	<LI>(4) EF links</LI>
+	<LI>(4) BH links</LI>
+	<LI>(2) CH links
+	  <BR>(2) CD links</LI>
+	<LI>(2) feet, one of each symmetry</LI>
+	</B>
+      </UL>
+      <BR>Clean support material from foot/hamstring node.
+      <BR>Polish 3/16" hole surfaces.
+    </LI>
+    <LI>Construct a pair of legs, check for smoothness of operation.</LI>
+    <LI>Once operation of leg pair has been verified, <B>print rest of another leg pair</B></LI>
+    <LI>Complete assembly of one side of legs (4 legs on a main bar, with motor drive), and mount on axles</LI>
+    <LI>Test motor operation with a small battery.</LI>
+    <LI><B>Print payload mounts</B>, and mount on axles</LI>
+    <LI>Repeat steps 2 to 6 for other set of 4 legs</LI>
+    <LI>Mount other leg set on axles.</LI>
+    <LI>[optional] Print and mount outside brace bars</LI>
+    <LI>Complete payload electronics assembly</LI>
+  </OL>
+<HR>
+<P align="right">
+    <IMG SRC="../img/boimE14blu.png">
+<!-- Created: 131014 -->
+<!-- hhmts start -->
+Last modified: 131007
+<!-- hhmts end -->
+</P>
+  </body>
+</html>
