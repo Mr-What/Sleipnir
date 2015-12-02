@@ -47,6 +47,43 @@ difference() { union() {
       else          { cylinder(h=2*width,r=Arad,$fn=80);}}
 }}
 
+module pulley2(pr,width,Arad,Doff) {
+rr=pr-2.5;
+  difference() {
+    union() {
+      difference() {
+        union() {  // main pulley disc
+          translate([0,0,1]) cylinder(r=pr,h=width-2,$fn=120);
+          cylinder(r1=pr-.4*width,r2=pr+.3*width,h=width,$fn=64);
+          cylinder(r2=pr-.6*width,r1=pr+.4*width,h=width,$fn=64);
+        }
+	spokeCutOut(pr,width);
+      }
+      translate([0,0,0.1])
+        cylinder(r1=Arad+2.5,r2=Arad+1.5,$fn=24,h=width+1); // hub
+    }
+
+    translate([0,0,-1]) {
+      if (Doff > 0) { Daxle(Arad,Doff,2*width); }
+      else          { cylinder(h=2*width,r=Arad,$fn=36);}}
+  }
+}
+
+module spokeCutOut(pr,width) {
+  difference() {
+    translate([0,0,.7])
+       cylinder(r1=pr-.4*width-2,r2=pr+.3*width-1.5,h=width-.5,$fn=80);
+    for(a=[0:60:355]) rotate([0,0,a]) hull() {
+      cylinder(r=2,h=.1,$fn=4);
+      translate([0,0,width-1.5]) sphere(r=.4,$fn=12);
+      translate([pr+.3*width,0,0]) {
+         translate([0,0,width-0.8]) sphere(r=.3,$fn=12);
+	 cylinder(r=1,h=1,$fn=4);
+      }
+    }
+  }
+}
+
 module simplePulley(pr,width,Arad,Drad) { difference() { union() {
    pulleyCore(pr,width);
    cylinder(h=width+1,r1=Arad+3,r2=Arad+2,$fn=24);

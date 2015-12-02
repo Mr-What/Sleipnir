@@ -14,7 +14,8 @@
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
 // *****
 
-PART="pulley";
+//PART="motor";
+PART="demo";
 echo(str("PART=",PART));
 
 HoleFuzz = 0.1;  // extra radius (mm) to add to holes to account for printer slop
@@ -81,8 +82,8 @@ include <JansenDefs.scad>;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //       define some standard part dimensions for re-use in groups, etc.
-acH0 = NodeHeight;
-acH1 = acH0+2;
+acH0 = NodeHeight-.2;
+acH1 = acH0+1.5;
 acOR = Arad+3;
 acIR = rad4;
 pulleyR = 17;
@@ -250,25 +251,25 @@ module feet(dLeft,dBase,dPerp) { union() {
    bracedFoot_pad(dLeft,dBase,dPerp);
    bracedFoot_pad(dLeft,dBase,dPerp);
 }}
-module crankLinks() {
-spc=6;
-union() {
-   translate([0,spc*3.2,0]) 
-     crankLink_pad(CH,15,Hrad);
-     crankLink_pad(CH,15,Hrad);
-   rotate([0,0,180]) { 
-     translate([-CD-1.5*spc, spc*1.6,0]) crankLink_pad(CD,15,Drad);
-     translate([-CD-1.5*spc,-spc*1.6,0]) crankLink_pad(CD,15,Drad); }
-
-   // tight holes to glue to axle, not spin
-   translate([5*spc,-3.2*spc,0])
-     crankArm_pad(AC,acH0,acOR,acIR,acH1,acOR,acIR); 
-}}
 
 module mainPulley() {
 ph=5;  // pulley thickness
-sr=25.4 * 3/16/2 + HoleFuzz;  // standoff countersink radius
-sd=1; // standoff countersink distance 
+sr=25.4 * 3/16/2 + 1.5*HoleFuzz;  // standoff countersink radius
+
+  difference() {
+    union() {
+      //pulley2(18,ph,sr,0);  // make with radius for standoff
+      pulley2(AC+5.5,ph,sr,0);  // make with radius for standoff
+      cylinder(r=sr+1,h=ph-0.5,$fn=12);  // fill back in for rod hole
+    }
+
+    translate([0,0,-1]) cylinder(r=rad4,h=ph+4,$fn=17); // drill hole for central rod
+    for (y=[-1,1]) translate([0,AC*y,-1])
+      cylinder(r=3,h=ph,$fn=36);  // screw pass-through for crank arm
+  }
+
+/*
+sd=.8; // standoff countersink distance 
 
   // countersink main pulley for standoffs a bit.
   difference() {
@@ -284,7 +285,27 @@ sd=1; // standoff countersink distance
     }
     translate([0,0,ph+1.5-sd-.5]) cylinder(r=sr,h=3,$fn=28);
   }
+*/
+
 }
+
+//module motorPulley() pulley(10,4,1.5+dHoleFuzz,1+dHoleFuzz);
+module motorPulley() pulley2(8,4,1.5+dHoleFuzz,1+dHoleFuzz);
+
+use <motorMount.scad>
+module motorMountDemo() {
+po=8;  // main pulley offset
+  %translate([0,-Ay,0]) mainBar(Bx,Ay);
+  translate([0,-Ay,22]) rotate([0,180,0]) mainBar(Bx,Ay);
+  translate([0,-Ay-5.4,4]) rotate([0,180,0]) motorMount();
+  translate([0,0,po]) mainPulley();
+  #translate([0,0,po-12.7  ]) cylinder(r=25.4*3/16/2,h=25.4/2,$fn=18);
+  #translate([0,0,po+6.6-.6]) cylinder(r=25.4*3/16/2,h=25.4/2,$fn=18);
+  translate([0,-38.5,8]) motorPulley();
+  translate([0,0,26.7]) rotate([0,0,90]) crankArmAC();
+}
+
+module crankArmAC() crankArm(AC,acH0,acOR,acIR,acH1,acOR,acIR); 
 
 //=====================================================
 use <spacers.scad>;
@@ -302,34 +323,34 @@ else if (PART=="FootA")
                   bracedFoot(FGleft,FG,FGperp);
   //  translate([0,0,18]) cube([200,200,20],center=true); }
 else if (PART=="FootB") { mirror([1,0,0]) bracedFoot(FGleft,FG,FGperp); }
-else if (PART=="crankLinks") crankLinks();
 else if (PART=="CH"   ) crankLink(CH,15,Hrad); // build 2
 else if (PART=="CD"   ) crankLink(CD,15,Drad); // build 2
 else if (PART=="EF"   ) monoBracedLinkage(EF); // build 4
 else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight,Brad+2,BradFree,3,Hrad+2.5,rad4);
-else if (PART=="AC"   ) crankArm(AC,acH0,acOR,acIR,acH1,acOR,acIR); 
-else if (PART=="halfPulley") { union() { color("Cyan") footpad(pulleyR+7);
-       translate([0,0,.2]) halfPulley(pulleyR,2.5,AradTight,-1); }}
-else if (PART=="halfDrivePulley") { union() { color("Cyan") footpad(15);
-       translate([0,0,.1]) halfPulley(8,2.5,1.5+.3,1+.3); }}
+else if (PART=="AC"   ) crankArmAC(); 
 else if (PART=="pulley") {  mainPulley(); }
-else if (PART=="drivePulley") { pulley(10,4,1.5+dHoleFuzz,1+dHoleFuzz); }
+else if (PART=="drivePulley") { motorPulley(); }
 else if (PART=="mainBar") {  mainBar(Bx,Ay); }
 else if (PART=="braceBar") {  brace(2*Bx,8,Brad); }
 else if (PART=="spacers") { union(){ spacers(NodeHeight/2,Bhole+3,Brad);
    translate([0,-7.5*LinkRad*1.414+1,0]) spacers(NodeHeight/2,LinkRad,rad4); }}
+else if (PART=="motor") { motorMountDemo(); }
 //else if (PART=="demo") { //show all unique parts
 else {
    mainBar(Bx,Ay);
-   #translate([0,Ay,20]) pulley(18,5,rad4,0);
-   translate([0,-50,0])  pulley(10,4,1.5+.3,1+.3);
+   %translate([0,Ay,20]) mainPulley();
+   translate([0,-50,0])  motorPulley();
    translate([ 50, 30,0]) BED1(DEleft,DE,DEperp);//imBED(DEleft,DE,DEperp);
    translate([-26, 44,0]) rotate([0,0,180]) bracedFoot(FGleft,FG,FGperp);
    translate([-12,-16,0]) crankLink(CD,15,Drad);
    translate([-36,-28,0]) crankLink(CH,15,Hrad);
    translate([-73,-15,0]) monoBracedLinkage(EF);
-   translate([-60, 15,0]) crankArm(AC,acH0,acOR,acIR,acH1,acOR,acIR); 
+   translate([-60, 15,0]) crankArmAC(); 
 
    translate([ 25, 15,0]) linkage1(BH,2.5*NodeHeight,Brad+1.8,BradFree,ForkHeight,Hrad+2,rad4);
    translate([40,-42,0]) rotate([0,0,50]) brace(2*Bx,8,Brad);
 }
+
+
+//else if (PART=="halfPulley") { union() { color("Cyan") footpad(pulleyR+7); translate([0,0,.2]) halfPulley(pulleyR,2.5,AradTight,-1); }}
+//else if (PART=="halfDrivePulley") { union() { color("Cyan") footpad(15);  translate([0,0,.1]) halfPulley(8,2.5,1.5+.3,1+.3); }}
