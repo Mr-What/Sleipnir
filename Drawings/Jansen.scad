@@ -5,11 +5,16 @@
 //       HipA, HipB, FootA, FootB, CH, CD, EF, BH, AC, pulley, mainBar, drivePulley
 // For a 2-leg (half-trotter) :  print (2) CH, CD ; (4) EF, BH ; (1) of the others
 // For a production robot, glue a rectangular support/spacer between BH pairs for stiffness
-//
+
+// *** DEPRICATED
 // Combined parts with pads, optimized for RepRap :
 // Hip, Feet, crankLinks, EFs, BHs    : main, pulley, drivePulley as above (brace)
-PART="BH";
+//
+// standoffs also DEPRICATED
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
+// *****
+
+PART="pulley";
 echo(str("PART=",PART));
 
 HoleFuzz = 0.1;  // extra radius (mm) to add to holes to account for printer slop
@@ -234,57 +239,6 @@ module crankArm(len,h0,r0,d0,h1,r1,d1) { difference() {
 
 include <JansenBED.scad>;
 
-//============================================ Parts with brim/pads underneath
-
-module BED_pad(left,base,perp) { union() { color("Cyan") hull() {
-  translate([-left,0,0]) footpad(11);
-  translate([base-left,0,0]) footpad(11);
-  translate([0,perp,0]) footpad(13);}
-  translate([0,0,.2]) imBED(left,base,perp);
-}}
-module bracedFoot_pad(left,base,perp) { union() { color("Cyan") hull() {
-  translate([-left,0,0]) footpad(17);
-  translate([0,perp,0]) footpad(11);
-  translate([base-left,0,0]) footpad(13); }
-  translate([0,0,.2]) bracedFoot(left,base,perp);
-}}
-module crankLink_pad(len,dFlat,rHole) { union() { color("Cyan") hull() {
-   footpad(13);
-   translate([len,0,0]) footpad(13); }
-   translate([0,0,.2]) crankLink(len,dFlat,rHole);
-}}
-module monoBracedLinkage_pad(len) { union() { color("Cyan") hull() {
-   footpad(15);
-   translate([len,0,0]) footpad(13); }
-   translate([0,0,.2]) monoBracedLinkage(len);
-}}
-module linkage_pad(len,h0,r0,d0,h1,r1,d1) { union() { color("Cyan") hull() {
-   footpad(11);
-   translate([len,0,0]) footpad(11); }
-   translate([0,0,.2]) linkage(len,h0,r0,d0,h1,r1,d1);
-}}
-module brace_pad(len,h0,r0) { union() { color("Cyan") hull() { translate([len,0,0])
-   footpad(r0+7);
-   footpad(r0+7); }
-   translate([0,0,.2]) brace(len,h0,r0);
-}}
-module linkage1_pad(len,h0,r0,d0,h1,r1,d1) { union() { color("Cyan") hull() {
-   footpad(11);
-   translate([len,0,0]) footpad(11); }
-   translate([0,0,.2]) linkage1(len,h0,r0,d0,h1,r1,d1);
-}}
-module crankArm_pad(len,h0,r0,d0,h1,r1,d1) { union() { color("Cyan") hull() {
-   footpad(11);
-   translate([len,0,0]) footpad(11); }
-   translate([0,0,.2]) crankArm(len,h0,r0,d0,h1,r1,d1);
-}}
-module mainBar_pad(x,y) { union() { color("Cyan") hull() {
-  translate([-x,0,0]) footpad(12);
-  translate([ x,0,0]) footpad(12);
-  }
-  translate([0,0,.2]) mainBar(x,y);
-}}
-
 //---------------------
 module BED(dLeft,dBase,dPerp) { union() { rotate([0,0,50]) {
    translate([dBase*0.2,-3*Drad,0]) rotate([0,0,180]) mirror([1,0,0])
@@ -310,22 +264,27 @@ union() {
    translate([5*spc,-3.2*spc,0])
      crankArm_pad(AC,acH0,acOR,acIR,acH1,acOR,acIR); 
 }}
-module EFs(len) {
-spc=6;
-union() {
-  translate([len-spc, 1.9*spc,0]) rotate([0,0,180]) monoBracedLinkage_pad(len);
-  translate([len-spc,-1.9*spc,0]) rotate([0,0,180]) monoBracedLinkage_pad(len);
-  translate([0,-3.8*spc,0]) monoBracedLinkage_pad(len);
-  monoBracedLinkage_pad(len);
-}}
-module BHs(len,h0,r0,d0,h1,r1,d1) {
-spc = 2*Brad;
-union() {
-  translate([spc*1.1, 1.6*spc,0]) linkage1_pad(len,h0,r0,d0,h1,r1,d1);
-  translate([spc*1.1,-1.6*spc,0]) linkage1_pad(len,h0,r0,d0,h1,r1,d1);
-  translate([ 0     ,-3.2*spc,0]) linkage1_pad(len,h0,r0,d0,h1,r1,d1);
-                                  linkage1_pad(len,h0,r0,d0,h1,r1,d1);
-}}
+
+module mainPulley() {
+ph=5;  // pulley thickness
+sr=25.4 * 3/16/2 + HoleFuzz;  // standoff countersink radius
+sd=1; // standoff countersink distance 
+
+  // countersink main pulley for standoffs a bit.
+  difference() {
+    union() {
+      pulley(18,ph,rad4,0);
+      // pulley hub was 1.3 mm higher than outher thickness.  a little more for countersink
+      cylinder(r1=5,r2=4,h=ph+1.5,$fn=36);  // give pulley a wider hub
+    }
+
+    translate([0,0,-1]) {
+      cylinder(r=rad4,h=ph+3,$fn=17); // main threaded rod hole
+      //cylinder(r=sr,h=1+sd+.2,$fn=28); // a little extra on bridged standoff depth
+    }
+    translate([0,0,ph+1.5-sd-.5]) cylinder(r=sr,h=3,$fn=28);
+  }
+}
 
 //=====================================================
 use <spacers.scad>;
@@ -347,25 +306,16 @@ else if (PART=="crankLinks") crankLinks();
 else if (PART=="CH"   ) crankLink(CH,15,Hrad); // build 2
 else if (PART=="CD"   ) crankLink(CD,15,Drad); // build 2
 else if (PART=="EF"   ) monoBracedLinkage(EF); // build 4
-else if (PART=="EFs"  ) EFs(EF);
-// make small end of BH a little shorter to make it easier to use a 1" screw for 'hamstirng' node
-else if (PART=="BHs"  ) BHs(     BH,2.5*NodeHeight+1.5,Brad+1.8,BradFree,3.7,Hrad+2,rad4);
-else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight+1.5,Brad+1.8,BradFree,3.7,Hrad+2,rad4); // build 4, glue them together with a rectangle if desired
+else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight,Brad+2,BradFree,3,Hrad+2.5,rad4);
 else if (PART=="AC"   ) crankArm(AC,acH0,acOR,acIR,acH1,acOR,acIR); 
 else if (PART=="halfPulley") { union() { color("Cyan") footpad(pulleyR+7);
        translate([0,0,.2]) halfPulley(pulleyR,2.5,AradTight,-1); }}
 else if (PART=="halfDrivePulley") { union() { color("Cyan") footpad(15);
        translate([0,0,.1]) halfPulley(8,2.5,1.5+.3,1+.3); }}
-else if (PART=="pulley_pad") { union() { footpad(23); translate([0,0,.2])
-                            pulley(18,5,rad4,0); }}
-else if (PART=="pulley") {  pulley(18,5,rad4,0); }
-else if (PART=="drivePulley_pad") { union() { footpad(15); translate([0,0,.2])
-                                pulley(10,4,1.5+dHoleFuzz,1+dHoleFuzz); }}
+else if (PART=="pulley") {  mainPulley(); }
 else if (PART=="drivePulley") { pulley(10,4,1.5+dHoleFuzz,1+dHoleFuzz); }
 else if (PART=="mainBar") {  mainBar(Bx,Ay); }
-else if (PART=="main") { mainBar_pad(Bx,Ay); }
 else if (PART=="braceBar") {  brace(2*Bx,8,Brad); }
-else if (PART=="brace") { brace_pad(2*Bx,8,Brad); }
 else if (PART=="spacers") { union(){ spacers(NodeHeight/2,Bhole+3,Brad);
    translate([0,-7.5*LinkRad*1.414+1,0]) spacers(NodeHeight/2,LinkRad,rad4); }}
 //else if (PART=="demo") { //show all unique parts
