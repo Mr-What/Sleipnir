@@ -10,10 +10,10 @@ thinWall=.35;//0.41;  // width of thinnest wall which will not get culled by sli
 
 //translate([0,20,0]) L298mount();
 
-//translate([0,0,7.8]) payloadPlatform();
+translate([0,0,7.8]) payloadPlatform();
 
 braceSep = PCBholeInset+PCBholeSep/2;
-//for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
+%for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
       payloadBrace();
 
 // -----------------------------------------------------
@@ -27,9 +27,9 @@ module payloadBrace() difference() {
 
 
 // dovetail tabs for platform
-tabZ=3.6;  // offset for tab
+tabZ=4.2;  // offset for tab
 tabSep=40; // distance between tab centers
-module tab() cylinder(r1=5,r2=4.5,h=6,$fn=3);
+module tab() cylinder(r1=7,r2=5.5,h=6,$fn=3);
 
 module payloadPlatform() difference() {
   payloadPlatformShell();
@@ -72,7 +72,7 @@ module payloadPlatformShell() {
       // slots for dovetail tabs
       for(a=[0,180]) rotate([0,0,a])
          for(x=[-tabSep,0,tabSep]) translate([x,braceSep-tabZ,-3])
-            rotate([0,0,-30]) scale(1.1) tab();
+            rotate([0,0,-30]) scale(1.07) tab();
     }
 
     // round off corners
@@ -155,8 +155,8 @@ platOff=-34;  // L286 module mount platform offset
       for(x=[-tabSep,0,tabSep]) translate([x,5-1,tabZ])
          rotate([-90,0,0]) rotate([0,0,-30]) difference() {
             tab();
-            %translate([0,0,2]) // pilot hole for plastic screw
-               cylinder(r1=PCBhole-.5,r2=PCBhole+.2,h=5,$fn=13);
+            #translate([0,0,1]) // pilot hole for plastic screw
+               cylinder(r1=PCBhole-.4,r2=PCBhole+.2,h=6,$fn=13);
          }
     }
 }
