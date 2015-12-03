@@ -27,9 +27,9 @@ module payloadBrace() difference() {
 
 
 // dovetail tabs for platform
-tabZ=1.5;  // offset for tab
+tabZ=3.6;  // offset for tab
 tabSep=40; // distance between tab centers
-module tab() cylinder(r1=3,r2=2,h=6,$fn=3);
+module tab() cylinder(r1=5,r2=4.5,h=6,$fn=3);
 
 module payloadPlatform() difference() {
   payloadPlatformShell();
@@ -45,7 +45,7 @@ module payloadPlatformCutouts() {
       // cutouts for dovetail tabs
       for(a=[0,180]) rotate([0,0,a])
          for(x=[-tabSep,0,tabSep]) translate([x,braceSep-tabZ,-3])
-            rotate([0,0,-30]) scale(2) tab();
+            rotate([0,0,-30]) scale(1.8) tab();
     }
     hexGrid();
   }
@@ -55,8 +55,6 @@ module payloadPlatformCutouts() {
 module hexGrid() {
 dh=3.1;
 c30=cos(30);  $fn=6;   dx=3*dh;  dy=2*c30*dh;
-//r1=hr+1.1;  r2=hr-.4; 
- ch=thick+2;  dz=-1.6; 
   translate([3*dh/2,-c30*dh,0])
     for(j=[-5:6]) for(i=[-5:4]) hex(i*dx,j*dy);
     for(j=[-5:5]) for(i=[-5:5]) hex(i*dx,j*dy);
@@ -153,6 +151,10 @@ platOff=-34;  // L286 module mount platform offset
       }
 
       for(x=[-tabSep,0,tabSep]) translate([x,5-1,tabZ])
-         rotate([-90,0,0]) rotate([0,0,-30]) tab();
+         rotate([-90,0,0]) rotate([0,0,-30]) difference() {
+            tab();
+            %translate([0,0,2]) // pilot hole for plastic screw
+               cylinder(r1=PCBhole-.5,r2=PCBhole+.2,h=5,$fn=13);
+         }
     }
 }
