@@ -6,7 +6,7 @@ include <JansenDefs.scad>;  // Bx
 PCBholeSep=37;  // hole pattern for L298 module is a square this wide
 PCBholeInset=15;  // from hole center to side of mount
 
-thinWall=0.41;  // width of thinnest wall which will not get culled by slicer
+thinWall=.35;//0.41;  // width of thinnest wall which will not get culled by slicer
 
 //translate([0,20,0]) L298mount();
 
@@ -133,9 +133,11 @@ platOff=-34;  // L286 module mount platform offset
         //translate([x*(axisSep-14),0,0]) cylinder(r=0.4,h=1,$fn=4); }
 
       hull() { // top bar
-        translate([0,5,2]) cube([2*axisSep,.5,4],center=true);
-        cube([2*axisSep,1,1],center=true);
+        translate([0,4.7,4]) cube([2*axisSep,.7,8],center=true);
+        translate([0,1.5,0]) cube([2*axisSep,1 ,1],center=true);
       }
+      hull() for(x=[-1,1]) translate([axisSep*x,1.1,0.5])
+            scale([1,4,1.5]) sphere(1,$fn=16);
 
       translate([0,platOff,0]) rotate([90,0,0]) L298mount();
 
