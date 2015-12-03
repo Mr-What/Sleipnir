@@ -10,10 +10,10 @@ thinWall=0.41;  // width of thinnest wall which will not get culled by slicer
 
 //translate([0,20,0]) L298mount();
 
-translate([0,0,7.8]) payloadPlatform();
+//translate([0,0,7.8]) payloadPlatform();
 
 braceSep = PCBholeInset+PCBholeSep/2;
-%for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
+//for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
       payloadBrace();
 
 // -----------------------------------------------------
@@ -57,7 +57,7 @@ dh=3.1;
 c30=cos(30);  $fn=6;   dx=3*dh;  dy=2*c30*dh;
   translate([3*dh/2,-c30*dh,0])
     for(j=[-5:6]) for(i=[-5:4]) hex(i*dx,j*dy);
-    for(j=[-5:5]) for(i=[-5:5]) hex(i*dx,j*dy);
+    for(j=[-6:6]) for(i=[-5:5]) hex(i*dx,j*dy);
 }
 module hex(x,y) translate([x,y,0])
    cylinder(r1=2,r2=2.6,h=6,$fn=6,center=true); 
