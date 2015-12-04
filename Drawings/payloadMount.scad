@@ -1,6 +1,6 @@
 // unified payload electronics mount
 
-Bhole=2.38+.2;  // for brass tube
+Bhole=2.38+.3;  // for brass tube
 PCBhole = (25.4*3/32)/2;//1;  // found that 3/32" drill made good pilot for #4 self-piloting screw
 include <JansenDefs.scad>;  // Bx 
 PCBholeSep=37;  // hole pattern for L298 module is a square this wide
@@ -10,11 +10,16 @@ thinWall=.35;//0.41;  // width of thinnest wall which will not get culled by sli
 
 //translate([0,20,0]) L298mount();
 
-translate([0,0,7.8]) payloadPlatform();
+%translate([0,0,  7.8])                 payloadPlatform();
+%translate([0,0,-31.5]) rotate([180,0,0]) lowerPlatform();
 
 braceSep = PCBholeInset+PCBholeSep/2;
-%for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
+for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
       payloadBrace();
+
+//translate([0,100,0]) payloadBrace();
+
+//%translate([0,0,-29]) cylinder(r=4,h=31,$fn=4);
 
 // -----------------------------------------------------
 
@@ -28,24 +33,54 @@ module payloadBrace() difference() {
 
 // dovetail tabs for platform
 tabZ=4.2;  // offset for tab
-tabSep=40; // distance between tab centers
-module tab() cylinder(r1=7,r2=5.5,h=6,$fn=3);
+module tab(pilotHoleRad=0) difference() {
+  cylinder(r1=7,r2=5.5,h=6,$fn=3);
 
-module payloadPlatform() difference() {
-  payloadPlatformShell();
-  payloadPlatformCutouts();
+  if (pilotHoleRad > 0.2) {
+     translate([0,0,1]) // pilot hole for plastic screw
+        #cylinder(r1=pilotHoleRad-.4,r2=pilotHoleRad+.2,h=6,$fn=13);
+  }
+}
+tabCutoutScale = .4/6 + 1;  // want .2 mm space
+tabShellScale  =  4/6 + 1;  // want  2 mm space
+tabSepUpper=40;
+tabSepLower=23;
+
+module payloadPlatform() {
+platWidth=100;
+  difference() {
+    payloadPlatformShell(  platWidth,tabSepUpper); // width, tab seperation
+    payloadPlatformCutouts(platWidth,tabSepUpper);
+  }
+}
+module lowerPlatform() {
+platWidth=70;
+hc=PCBholeSep/2;  // dist for L298N module sqare hole pattern
+  difference() {
+    payloadPlatformShell(  platWidth,tabSepLower); // width, tab seperation
+    difference() {
+      payloadPlatformCutouts(platWidth,tabSepLower);
+      for(x=[-1,1]) for(y=[-1,1]) translate([x*hc,y*hc,0])
+         cylinder(r1=4,r2=3,h=6,$fn=12,center=true);
+    }
+
+    // pilot holes for L298N module mount screws
+    for(x=[-1,1]) for(y=[-1,1]) translate([x*hc,y*hc,-1])
+       cylinder(r1=PCBhole+.3,r2=PCBhole-.2,h=4,$fn=12,center=true);
+  }
 }
 
-module payloadPlatformCutouts() {
+module payloadPlatformCutouts(width=100,tabSep=40) {
   intersection() {
     difference() {
-      hull() for(x=[-1,1]) for(y=[-1,1]) translate([x*45,y*(braceSep-5),0])
-         cylinder(r1=2,r2=3,h=6,$fn=16,center=true);
+      hull() for(x=[-1,1]) for(y=[-1,1]) 
+         translate([x*(width/2-5),y*(braceSep-5),0])
+            cylinder(r1=2,r2=3,h=6,$fn=16,center=true);
 
       // cutouts for dovetail tabs
       for(a=[0,180]) rotate([0,0,a])
          for(x=[-tabSep,0,tabSep]) translate([x,braceSep-tabZ,-3])
-            rotate([0,0,-30]) scale(1.8) tab();
+            rotate([0,0,-30]) scale(tabShellScale) tab();
     }
     hexGrid();
   }
@@ -60,23 +95,24 @@ c30=cos(30);  $fn=6;   dx=3*dh;  dy=2*c30*dh;
     for(j=[-6:6]) for(i=[-5:5]) hex(i*dx,j*dy);
 }
 module hex(x,y) translate([x,y,0])
-   cylinder(r1=2,r2=2.6,h=6,$fn=6,center=true); 
+   cylinder(r1=2,r2=2.7,h=6,$fn=6,center=true); 
 
 
-
-module payloadPlatformShell() {
+// width of platform along axes  (Y width fixed)
+// tabSep  -- seperation between tab centers
+module payloadPlatformShell(width=100,tabSep=40) {
   intersection() {
     difference() {
-      cube([100,2*braceSep,5],center=true);
+      cube([width,2*braceSep,5],center=true);
 
       // slots for dovetail tabs
       for(a=[0,180]) rotate([0,0,a])
          for(x=[-tabSep,0,tabSep]) translate([x,braceSep-tabZ,-3])
-            rotate([0,0,-30]) scale(1.07) tab();
+            rotate([0,0,-30]) scale(tabCutoutScale) tab();
     }
 
     // round off corners
-    hull()for(x=[-1,1])for(y=[-1,1])translate([x*46,y*(braceSep-4),0])
+    hull()for(x=[-1,1])for(y=[-1,1])translate([x*(width/2-4),y*(braceSep-4),0])
        scale([4.5,4.5,3.5])sphere(1,$fn=36);
   }
 }
@@ -125,12 +161,11 @@ module L298mount() intersection() { cube([59,99,4],center=true);
 
 
 module payloadMount(axisSep,axisRad) {
-platOff=-34;  // L286 module mount platform offset
+platOff=-30+2;  // L286 module mount platform offset
     union() {
-      for (x=[-1,1]) //hull() {
-        translate([x*axisSep,0,0])
+
+      for (x=[-1,1]) translate([x*axisSep,0,0])    // axle hubs
            cylinder(r1=axisRad+3,r2=axisRad+2,h=12,$fn=36);
-        //translate([x*(axisSep-14),0,0]) cylinder(r=0.4,h=1,$fn=4); }
 
       hull() { // top bar
         translate([0,4.7,4]) cube([2*axisSep,.7,8],center=true);
@@ -139,24 +174,32 @@ platOff=-34;  // L286 module mount platform offset
       hull() for(x=[-1,1]) translate([axisSep*x,1.1,0.5])
             scale([1,4,1.5]) sphere(1,$fn=16);
 
-      translate([0,platOff,0]) rotate([90,0,0]) L298mount();
+      hull() { // lower bar
+        translate([0,platOff-.7,4]) cube([60,.6,8],center=true);
+        translate([0,platOff+1 ,0]) cube([60,1 ,1],center=true);
+      }
+      hull() for(x=[-1,1]) translate([31*x,platOff+3,0.3])
+            rotate([0,0,-x*40]) scale([1,3.5,1.5]) sphere(1,$fn=16);
+
+      //%translate([0,platOff,0]) rotate([90,0,0]) L298mount();
 
       for(x=[-1,1]) {  // main side braces
         hull() {
-          translate([x*axisSep,0,2]) scale([1.5,1,9]) sphere(1,$fn=16);
-          translate([x*28,platOff,2]) scale([1,2,4]) sphere(1,$fn=16);
+          translate([x*(axisSep+2),-2,2]) scale([1.5,1,9]) sphere(1,$fn=16);
+          translate([x*29,platOff ,3]) scale([.5,1,4]) sphere(1,$fn=16);
         }
         hull() {
-          translate([x*axisSep,0 ,0.3]) scale([4,1,1.5]) sphere(1,$fn=16);
-          translate([x*25,platOff,0.3]) scale([4,1,1.5]) sphere(1,$fn=16);
+          translate([x*(axisSep-1),0 ,0.3]) scale([4,1,1.5]) sphere(1,$fn=16);
+          translate([x*26,platOff,0.3]) scale([3,1,1.5]) sphere(1,$fn=16);
         }
       }
 
-      for(x=[-tabSep,0,tabSep]) translate([x,5-1,tabZ])
-         rotate([-90,0,0]) rotate([0,0,-30]) difference() {
-            tab();
-            #translate([0,0,1]) // pilot hole for plastic screw
-               cylinder(r1=PCBhole-.4,r2=PCBhole+.2,h=6,$fn=13);
-         }
+      // upper platform tabs
+      for(x=[-tabSepUpper,0,tabSepUpper]) translate([x,5-1,tabZ])
+         rotate([-90,0,0]) rotate([0,0,-30]) tab(PCBhole);
+
+      // lower platform tabs
+      for(x=[-tabSepLower,0,tabSepLower]) translate([x,platOff,tabZ])
+         rotate([90,0,0]) rotate([0,0,30]) tab(PCBhole);
     }
 }
