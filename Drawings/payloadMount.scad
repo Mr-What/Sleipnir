@@ -199,7 +199,7 @@ platOff=-30+2;  // L286 module mount platform offset
          rotate([-90,0,0]) rotate([0,0,-30]) tab(PCBhole);
 
       // lower platform tabs
-      for(x=[-tabSepLower,0,tabSepLower]) translate([x,platOff,tabZ])
+      for(x=[-tabSepLower,0,tabSepLower]) translate([x,platOff+0.3,tabZ])
          rotate([90,0,0]) rotate([0,0,30]) tab(PCBhole);
     }
 }
