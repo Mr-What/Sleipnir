@@ -49,9 +49,10 @@ union() {
      translate([-dLeft+2,0,0]) cylinder(h=2,r1=2.5,r2=2,$fn=6);
      translate([dRight-2,0,0]) cylinder(h=2,r1=2.5,r2=2,$fn=6);
    }
+   // extra brace on D node
    hull() { 
-     translate([dRight-5,6,0]) cylinder(h=2,r1=1.5,r2=1,$fn=6);
-     translate([dRight+1,2,0]) cylinder(h=2,r1=1.5,r2=1,$fn=6);
+     translate([dRight-6,6,0]) cylinder(h=3,r1=1,r2=0.5,$fn=6);
+     translate([dRight+2,1,0]) cylinder(h=4,r1=3,r2=2,$fn=6);
    }
 }}
 
@@ -139,15 +140,15 @@ difference() { union() {
            translate([0,0,NodeHeight+0.3]) forkTab(ForkHeight,Drad+2,rad4+1.4,forkLen-2);
            translate([NodeHeight, 0 , 0 ]) forkTab(    2     ,Drad+2,rad4+1.4,forkLen-2); }
 
-        translate([dBase,0,0]) rotate([0,0,-5]) difference() {
-           hull() { translate([-4*Drad,0,1.5]) sphere(r=1.5,$fn=12);
+        translate([dBase,0,0]) rotate([0,0,-5]) //difference() {
+           hull() { translate([-4*Drad-4,-1,2]) sphere(r=2,$fn=12);
                cylinder(h=NodeHeight,r1=Drad+2, r2=Drad+1.8, $fn=48); }
            // hollow out hull a but...  injction mold style
-           translate([0,0,-1.5]) { difference() { hull() {
-               translate([-4*Drad+3,0,0]) cylinder(h=NodeHeight-1,r1=.4,r2=.2,$fn=6);
-               cylinder(h=NodeHeight,r1=Drad-.1 ,r2=Drad-.4,$fn=24); }
-               cylinder(h=NodeHeight,r1=Drad+1.7,r2=Drad+1.9,$fn=24); }}
-       }
+           //#translate([0,0,-1.5]) { difference() { hull() {
+           //    translate([-4*Drad+3,0,0]) cylinder(h=NodeHeight-1,r1=.4,r2=.2,$fn=6);
+           //    cylinder(h=NodeHeight,r1=Drad-.1 ,r2=Drad-.4,$fn=24); }
+           //    cylinder(h=NodeHeight,r1=Drad+1.7,r2=Drad+1.9,$fn=24); }}
+       //}
 
      } // end translate
    } // union
@@ -156,6 +157,7 @@ difference() { union() {
    //   BEDhull(dLeft*.8-3,dPerp-3,.75*(dBase-dLeft)-3,perpHeight-2,Drad-1);
    } // inner diff
 
+   // main B-axis node cylinder
    translate([0,dPerp,0])
       cylinder(h=perpHeight,r1=Brad+2.4,r2=Brad+1.8,$fn=48);
 
@@ -173,7 +175,7 @@ difference() { union() {
    }   // end second union
 
    //------------- main holes/knock outs
-   translate([0,dPerp,0])drillHole(BradFree); // a little larger to move freely
+   translate([0,dPerp,0])drillHole(BradFree+.2); // a little larger to move freely
    translate([(dBase-dLeft),0,0]) drillHole(Drad);
 
    // for Maxi version, drill hole in top half of "fork" node,

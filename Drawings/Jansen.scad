@@ -6,6 +6,8 @@
 // For a 2-leg (half-trotter) :  print (2) CH, CD ; (4) EF, BH ; (1) of the others
 // For a production robot, glue a rectangular support/spacer between BH pairs for stiffness
 
+// PART="motor" to show motor-mount assembly
+
 // *** DEPRICATED
 // Combined parts with pads, optimized for RepRap :
 // Hip, Feet, crankLinks, EFs, BHs    : main, pulley, drivePulley as above (brace)
@@ -14,8 +16,7 @@
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
 // *****
 
-//PART="motor";
-PART="demo";
+PART="mainBar";
 echo(str("PART=",PART));
 
 HoleFuzz = 0.1;  // extra radius (mm) to add to holes to account for printer slop
@@ -258,9 +259,9 @@ sr=25.4 * 3/16/2 + 1.5*HoleFuzz;  // standoff countersink radius
 
   difference() {
     union() {
-      //pulley2(18,ph,sr,0);  // make with radius for standoff
       pulley2(AC+5.5,ph,sr,0);  // make with radius for standoff
-      cylinder(r=sr+1,h=ph-0.5,$fn=12);  // fill back in for rod hole
+      translate([0,0,0.1])
+        cylinder(r=sr+1,h=ph-0.7,$fn=12);  // fill back in for rod hole
     }
 
     translate([0,0,-1]) cylinder(r=rad4,h=ph+4,$fn=17); // drill hole for central rod
@@ -295,7 +296,7 @@ module motorPulley() pulley2(8,4,1.5+dHoleFuzz,1+dHoleFuzz);
 use <motorMount.scad>
 module motorMountDemo() {
 po=8;  // main pulley offset
-  %translate([0,-Ay,0]) mainBar(Bx,Ay);
+  translate([0,-Ay,0]) mainBar(Bx,Ay);
   translate([0,-Ay,22]) rotate([0,180,0]) mainBar(Bx,Ay);
   translate([0,-Ay-5.4,4]) rotate([0,180,0]) motorMount();
   translate([0,0,po]) mainPulley();
@@ -326,12 +327,12 @@ else if (PART=="FootB") { mirror([1,0,0]) bracedFoot(FGleft,FG,FGperp); }
 else if (PART=="CH"   ) crankLink(CH,15,Hrad); // build 2
 else if (PART=="CD"   ) crankLink(CD,15,Drad); // build 2
 else if (PART=="EF"   ) monoBracedLinkage(EF); // build 4
-else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight,Brad+2,BradFree,3,Hrad+2.5,rad4);
+else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight,Brad+2,BradFree+.2,3,Hrad+2.5,rad4);
 else if (PART=="AC"   ) crankArmAC(); 
 else if (PART=="pulley") {  mainPulley(); }
 else if (PART=="drivePulley") { motorPulley(); }
 else if (PART=="mainBar") {  mainBar(Bx,Ay); }
-else if (PART=="braceBar") {  brace(2*Bx,8,Brad); }
+else if (PART=="braceBar") {  brace(2*Bx,8,Brad+.1); }
 else if (PART=="spacers") { union(){ spacers(NodeHeight/2,Bhole+3,Brad);
    translate([0,-7.5*LinkRad*1.414+1,0]) spacers(NodeHeight/2,LinkRad,rad4); }}
 else if (PART=="motor") { motorMountDemo(); }

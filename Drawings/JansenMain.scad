@@ -51,8 +51,10 @@ difference() { union() {
 
    //% translate([0,dAy,thick+2.5]) halfPulley(pulleyR,3,Arad,-1);  // diagnostic to compare to bar
    }
-   translate([-dBx,0,-.1]) drillHole(BradTight);  // a little less for press-to-fit
-   translate([ dBx,0,-.1]) drillHole(BradTight);
+
+   for(x=[-1,1]) translate([dBx*x,0,-.1])
+      drillHole(BradTight+.1);  // a little less for press-to-fit
+
    translate([0,dAy, -.1]) drillHole(radA); // a little more for spinning axle
    translate([-dBx+3*BradO,0,3]) {
       cylinder(r1=tr-2.4,r2=tr-1.4,h=barSep+thick+lip+1,$fn=6);
