@@ -5,7 +5,7 @@ padH = 0.3;  // extra clearance amount for H end of CH link
 
 module bracedFoot(dLeft,dBase,dPerp) { // ---------------- foot with out-of-axis support
 braceHeight = NodeHeight3; // 3*TrueNodeHeight-.4;  // A little shorter than the hinge-pin
-dRight = 0.9 * (dBase-dLeft);  // scoot brace in a bit from foot
+dRight = 0.65 * (dBase-dLeft);  // scoot brace in a bit from foot
 dLeft1 = dLeft-Frad-1-((0.5*Frad)/(dLeft-Frad-1));
 union() { difference() { union() {
    translate([-dLeft,0,0]) {
@@ -13,7 +13,7 @@ union() { difference() { union() {
    hull() {
       translate([0,dPerp,0]) cylinder(h=braceHeight,r1=Hrad+2,r2=Hrad+1.6,$fn=48);
       translate([0,dPerp-3,0]) cylinder(h=braceHeight-1,r1=Hrad+1,r2=Hrad+0.5,$fn=32);
-      translate([.22*dRight,.85*dPerp,1.1]) sphere(r=1,$fn=6); }
+      translate([.22*dRight,.8*dPerp,1.1]) sphere(r=1,$fn=6); }
    hull() {
       translate([0,dPerp,0]) cylinder(h=braceHeight,r1=Hrad+1.9,r2=Hrad+1.4,$fn=48);
       translate([0,dPerp-3,0]) cylinder(h=braceHeight-1,r1=Hrad+1,r2=Hrad+0.5,$fn=32);
@@ -24,7 +24,7 @@ union() { difference() { union() {
 
    hull() {
       translate([0,dPerp ,0]) cylinder(h=braceHeight  ,r1=1.6,r2=1,$fn=6);
-      translate([dRight,0,0]) cylinder(h=BarHeight+1.5,r1=1.6,r2=1,$fn=6); }
+      translate([dRight,0,0]) cylinder(h=BarHeight+0.8,r1=1.6,r2=1,$fn=6); }
    hull() {
       translate([0,dPerp ,0]) cylinder(h=BarHeight,r1=LinkRad,r2=LinkRad-.5,$fn=6);
       translate([dRight,0,0]) cylinder(h=BarHeight,r1=LinkRad,r2=LinkRad-.5,$fn=6); }
