@@ -16,7 +16,7 @@
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
 // *****
 
-PART="mainBar";
+PART="FootA";
 echo(str("PART=",PART));
 
 HoleFuzz = 0.1;  // extra radius (mm) to add to holes to account for printer slop
@@ -327,7 +327,7 @@ else if (PART=="FootB") { mirror([1,0,0]) bracedFoot(FGleft,FG,FGperp); }
 else if (PART=="CH"   ) crankLink(CH,15,Hrad); // build 2
 else if (PART=="CD"   ) crankLink(CD,15,Drad); // build 2
 else if (PART=="EF"   ) monoBracedLinkage(EF); // build 4
-else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight,Brad+2,BradFree+.2,3,Hrad+2.5,rad4);
+else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight,Brad+2.5,BradFree+.2,3,Hrad+2.5,rad4);
 else if (PART=="AC"   ) crankArmAC(); 
 else if (PART=="pulley") {  mainPulley(); }
 else if (PART=="drivePulley") { motorPulley(); }
