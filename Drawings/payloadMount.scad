@@ -17,6 +17,8 @@ braceSep = PCBholeInset+PCBholeSep/2;
 for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
       payloadBrace();
 
+translate([0,0,9]) lid();
+
 //translate([0,100,0]) payloadBrace();
 
 //%translate([0,0,-29]) cylinder(r=4,h=31,$fn=4);
@@ -87,16 +89,46 @@ module payloadPlatformCutouts(width=100,tabSep=40) {
 }
 
 
-module hexGrid() {
 dh=3.1;
-c30=cos(30);  $fn=6;   dx=3*dh;  dy=2*c30*dh;
+c30=cos(30);   dx=3*dh;  dy=2*c30*dh;
+module hexGrid() {
   translate([3*dh/2,-c30*dh,0])
     for(j=[-5:6]) for(i=[-5:4]) hex(i*dx,j*dy);
     for(j=[-6:6]) for(i=[-5:5]) hex(i*dx,j*dy);
 }
-module hex(x,y) translate([x,y,0])
+module hex(x,y,s=[1,1,1]) translate([x,y,0]) scale(s)
    cylinder(r1=2,r2=2.7,h=6,$fn=6,center=true); 
 
+module lid() {
+  difference() {
+    union() {
+      for (i=[-1,1]) for (j=[-1,1]) 
+        hex(3*dx*i,5*dy*j,[.9,.9,1]);
+      difference() {
+        lidShell();
+        translate([0,0,0.3]) scale([.987,.98,.97]) lidShell();
+      }
+    }
+    hull() {
+       translate([0,0,3.5]) cube([89,57.5,.1],center=true);
+       cube([86,52,7],center=true);
+    }
+
+    for(x=[-1,1]) translate([x*23,0,2.2]) rotate([90,0,0])
+       scale([2.5,1.5,1]) cylinder(r=1,h=77,$fn=16,center=true);
+
+    //translate([0,0,-99]) cube([200,200,200]);
+  }
+
+}
+
+module lidShell()
+  hull() {
+    for (x=[-1,1]) for(y=[-1,1]) {
+      translate([44*x,27.5*y,4.6]) sphere(3,$fn=24);
+      translate([40*x,23  *y,30 ]) sphere(3,$fn=24);
+    }
+}
 
 // width of platform along axes  (Y width fixed)
 // tabSep  -- seperation between tab centers
