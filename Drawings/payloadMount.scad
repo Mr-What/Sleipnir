@@ -11,10 +11,10 @@ thinWall=.35;//0.41;  // width of thinnest wall which will not get culled by sli
 //translate([0,20,0]) L298mount();
 
 %translate([0,0,  7.8])                 payloadPlatform();
-%translate([0,0,-31.5]) rotate([180,0,0]) lowerPlatform();
+//%translate([0,0,-31.5]) rotate([180,0,0]) lowerPlatform();
 
 braceSep = PCBholeInset+PCBholeSep/2;
-for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
+*for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
       payloadBrace();
 
 translate([0,0,9]) lid();
@@ -102,20 +102,37 @@ module hex(x,y,s=[1,1,1]) translate([x,y,0]) scale(s)
 module lid() {
   difference() {
     union() {
-      for (i=[-1,1]) for (j=[-1,1]) 
-        hex(3*dx*i,5*dy*j,[.9,.9,1]);
+      for (i=[-1,1]) {
+        for (j=[-1,1]) translate([2*dx*i,5*dy*j,0]) {
+           hull() {
+             translate([0,  0 ,1.7]) cylinder(r=2.2,h=1.4,$fn=6);
+             translate([0,1.5*j,3]) cylinder(r=.1 ,h=5,$fn=6); }
+                              hex(0,0,[.9,.9,1]); }
+        hull() {                hex(5*dx*i,  0   ,[.9,.9,1]);
+           translate([(5*dx-0.6)*i,0,8]) sphere(0.1); }
+      }
       difference() {
         lidShell();
-        translate([0,0,0.3]) scale([.987,.98,.97]) lidShell();
+        translate([0,0,0.3]) scale([.982,.976,.97]) lidShell();
+
+        //trim off thin edges of shell
+        translate([0,0,2.4]) cube([89,53,2],center=true);
       }
     }
-    hull() {
-       translate([0,0,3.5]) cube([89,57.5,.1],center=true);
-       cube([86,52,7],center=true);
+
+    // trim off severe overhanging parts of tabs
+    *hull() {
+       translate([0,0,3.5]) cube([70,55,.1],center=true);
+       cube([70,50,7],center=true);
     }
 
-    for(x=[-1,1]) translate([x*23,0,2.2]) rotate([90,0,0])
-       scale([2.5,1.5,1]) cylinder(r=1,h=77,$fn=16,center=true);
+    // trim off part of tab in partial hex hole
+    for(x=[-1,1]) translate([49.7*x,0,0]) rotate([0,10*x,0])
+       cube([6,6,20],center=true);
+
+    // pass through for cable ties to attach platform to sides
+    for(x=[-1,1]) translate([x*28,0,2.7]) rotate([90,0,0])
+       scale([3,2,1]) cylinder(r=1,h=77,$fn=16,center=true);
 
     //translate([0,0,-99]) cube([200,200,200]);
   }
@@ -125,7 +142,7 @@ module lid() {
 module lidShell()
   hull() {
     for (x=[-1,1]) for(y=[-1,1]) {
-      translate([44*x,27.5*y,4.6]) sphere(3,$fn=24);
+      translate([44*x,26*y,4.6]) sphere(3,$fn=24);
       translate([40*x,23  *y,30 ]) sphere(3,$fn=24);
     }
 }
