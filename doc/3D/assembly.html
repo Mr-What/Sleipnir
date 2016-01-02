@@ -1,0 +1,85 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Assembly of 3D Printed Walking Robot Chassis</title>
+  </head>
+
+  <body bgcolor=#ccccff style="font-family:helvetica">
+    <H6 align=right>160202 https://github.com/Mr-What/Sleipnir/blob/master/doc/3D/assembly.html</H6>
+    <h1>Building standoff-hinged Walking Linkage, 3D printed</h1>
+<P>
+<!-- IMG align="right" SRC="../img/JansenLinkages.png" width="500" -->
+<IMG align="right" SRC="../img/JansenLinkage.svg" width="500">
+This drawing will help explain my conventions for naming parts
+of the linkage:
+</P>
+
+<H3>Models to print</H3>
+  you can, of course, print all parts before starting assembly.
+  However, in the assembly instructions we recommend which parts
+  to print just-in-time.
+  We recommend that you assemble the chassis in this manner, so that if there
+  is a problem with a part, it can be re-printed as needed.
+  It also allows you to build the chassis while it is printing minimizing
+  total project time.
+<H3>Assembly</H3>
+Recommended assembly order:
+  <OL><LI>Print and glue parts that need to be glued.
+      <OL type="a">
+	<LI><B>Print pulleys and crank arms (AC)</B>.
+	  <BR>(2) main pulleys, mainPulley.stl
+	  <BR>(4) crank arms, AC.stl</LI>
+	<LI><B>Print (4) main bars</B>, mainBar.stl</LI>
+	<LI><B>Print (2) motor mounts</B>, motorMount.stl</LI>
+	<LI>Glue motor mounts to main bars</LI>
+	<LI>Glue standoffs to main pulley (for each side)</LI>
+	<LI>Assemble main pulley into main bar (twice, once for each side)</LI>
+	<LI>Glue crankarms (AC) onto main pulley standoffs.
+	  <BR>Make sure they are glued/locked at level 180 degree phase.</LI>
+	<LI><B>Print (8) hips</B>, (4) hip.stl, and (4) hip.stl after a mirror reflection</LI>
+	<LI>Glue forks onto Hips.</LI>
+      </OL>
+
+    <LI>Print rest of one pair of leg assemblies.
+      You should have already printed and glued all 8 hip parts, 4 of each of the 2 mirror symmetries.
+      Each leg pair will use two of the above hips, one in each of the mirror symmetries.
+      In addition to the two hips, one of each mirror pair, you will need:
+      <UL>
+	<LI>(4) EF links, EF.stl</LI>
+	<LI>(4) BH links, BH.stl</LI>
+	<LI>(2) CH links, CH.stl</LI>
+	<LI>(2) CD links, CD.stl</LI>
+	<LI>(2) feet, foot.stl, one of each mirror symmetry</LI>
+	</B>
+      </UL>
+      <BR>Clean support material from foot/hamstring node.
+      <BR>Polish 3/16" hole surfaces.
+    </LI>
+<LI><A HREF="constructLeg.html">Construct a pair of legs</A>,
+  check for smoothness of operation.</LI>
+<LI>Once operation of leg pair has been verified,
+  print and assemble another leg pair</B></LI>
+<LI>Complete
+  <A HREF="assembleLegPair.html">assembly of one side of legs</A>
+  (4 legs on a main bar, with motor drive), and mount on axles</LI>
+<LI><A HREF="testMotor.html">Test motor operation</A>
+  with a small battery.</LI>
+<LI><B>Print payload mounts</B>,
+  <UL><LI>(2) payloadBrace.stl</LI>
+  <LI>payloadPlatformLower.stl</LI>
+  <LI>payloadPlatform.stl</LI></UL>
+  and mount on axles</LI>
+    <LI>Repeat steps 2 to 6 for other set of 4 legs</LI>
+    <LI>Mount other leg set on axles.</LI>
+    <LI>[optional] Print and mount outside brace bars</LI>
+    <LI>Complete payload electronics assembly</LI>
+  </OL>
+<HR>
+<P align="right">
+    <IMG SRC="../img/boimE14blu.png">
+<!-- Created: 131014 -->
+<!-- hhmts start -->
+<!-- hhmts end -->
+</P>
+  </body>
+</html>
