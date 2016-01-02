@@ -1,42 +1,77 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
   <head>
-    <title>Building Mr. What's Walking Linkage</title>
+    <title>Building 3D Printed Walking Robot Chassis</title>
   </head>
 
   <body bgcolor=#ccccff style="font-family:helvetica">
-<H6 align=right>$URL: svn+ssh://mrwhat@ssh.boim.com/home/mrwhat/svn/Walker/trunk/Building3D.html $
-<BR>$Id: Building3D.html 316 2013-11-07 20:17:50Z mrwhat $</H6>
-    <h1>Building standoff-hinged Walking Linkage, 3D printed</h1>
+<H6 align=right>160102 https://github.com/Mr-What/Sleipnir/blob/master/doc/3D/assembly.html</H6>
+    <h1>Building 3D Printed Walking Robot Chassis</h1>
 <P>
-<IMG align="right" SRC="JansenLinkages.png" width="500">
+<IMG align="right" SRC="img/JansenLinkage.svg" width="500">
 This drawing will help explain my conventions for naming parts
 of the linkage:
 </P>
 
-<P>For a complete chassis hardware setup, using 3/16" OD standoff hinges you will want :
+<H2>BoM</H2>
+<P>For a complete chassis hardware setup, using 3/16" OD nylon spacers you will want :
 <UL><LI>(2) gearhead motors</LI>
-<LI>motor driver module</LI>
-<LI>(2) 3/16" OD brass tubes or steel rods, 1 foot long</LI>
-<LI>CA cement, gap filling, medium-viscosity
-<LI>(16) 1/2" long, 3/16" OD standoffs for #4-40 screws</LI>
-<LI>(24) 3/16" long, 3/16" OD standoffs for #4-40 screws</LI>
+  <LI><A HREF="http://www.aliexpress.com/item/1pcs-lot-New-Dual-H-Bridge-DC-Stepper-Motor-Drive-Controller-Board-Module-L298N-for-Ar/1580354773.html">
+      L298N motor driver module</A></LI>
+<LI>(2) 3/16" OD brass tubes or steel rods, 1 foot long, or similar sized kebab skewers</LI>
+  <LI>CA cement, gap filling, medium-viscosity, and/or
+    <BR>JB weld, or similar epoxy good for bonding plastic to metal</LI>
+<LI>(8) 1/2" long, 3/16" OD spacers for #4 screws</LI>
+<LI>(24) 3/16" long, 3/16" OD spacers for #4 screws</LI>
+<LI>(8) 1/2" long, 3/16" OD standoffs for #4-40 screws</LI>
 <LI>(2) #4-40 0.25 to 0.75 inch threaded rods.
-<BR>Can be made by cutting the head off of a screw, and then cleaning the threads.
-<LI>(76) 5/16" long #4-40 pan or round-head screws</LI>
-<LI>(74+) #4 flat washers
-<LI>(4) #4 larger diameter flat washers, if available.  (standard diameter is OK)
-<BR>If washers are thin, may need to double some for clearance on 5/16" #4-40 screws, or replace some 5/16" screws with 1/4"</LI>
-<LI>(74) #4 internal tooth lockwashers</LI>
+  <BR>Can be made by cutting the head off of a screw, and then cleaning the threads.
+</LI>
+  <LI>(24) #4 flat washers, optional, for leg joints.
+    <BR>Might be good for reliability of leg joints, but not absolutely necessary</LI>
+  <LI>(4) #4 larger diameter flat washers, if available.  (standard diameter is OK)
+    <BR>for crank spindles.</LI>
+  <LI>(4) #4 internal tooth lock washers
+    <BR>for spindles</LI>  
+  <LI>(36-48) 3/16+" ID nylon washers.
+    <BR>can vary for each build.  They can be used as shims to make parts align and rotate better</LI>
+<LI>(24) #4-40 1/2" screws</LI>
+<LI>(8) #4-40 1" screws</LI>
+<LI>(32) #4-40 nyloc nuts</LI>
+  <LI>2 Scunchii brand silicone hair ties (drive belts)</LI>
+  <LI>small cable ties, 8-16 or so.</LI>
+  <LI>(8-14) #4ish plastic screws.
+    <BR>They are optional to attach the payload platforms.
+    You can use either screws (and more washers), or cable ties</LI>
 </UL>
 </P>
-<P>The 3/16" OD standoffs are fairly rare.
-I can sell some for slightly above cost.
-I intend to offer full hardware packages, including these standoffs, soon.
-</P>
+
+<H3>Electronics</H3>
+For the optional baseline remote-control-over-bluetooth electronics,
+you will need:
+<UL>
+  <LI><A HREF="http://www.aliexpress.com/item/Free-Shipping-Nano-3-0-Controller-Board-Compatible-with-Arduino-Nano-CH340-USB-Driver/2021663360.html">Arduino Nano</A></LI>
+  <LI><A HREF="http://www.aliexpress.com/item/Free-shipping-NANO-3-0-controller-Terminal-Adapter-for-NANO-terminal-expansion-board-for-arduino-Nano/1921109123.html">
+      Arduino Nano breakout board</A></LI>
+  <LI>HC-06 or similar
+    <A HREF="http://www.aliexpress.com/item/HC-06-Bluetooth-serial-pass-through-module-wireless-serial-communication-from-machine-Wireless-HC06-for-arduino/32284764842.html">
+      serial-over-bluetooth module</A></LI>
+  <LI><A HREF="http://www.aliexpress.com/item/EE4208-5pcs-lot-2A-AA-Battery-Holder-Storage-Box-Case-With-Lead-Cable-On-Off-Switch/2028650080.html">
+      3-cell battery holder</A></LI>
+  <LI>wires, solder, soldering iron</LI>
+  <LI><A HREF="https://github.com/Mr-What/TankDrive">
+      firmware for Arduino</A></LI>
+  <LI><A HREF="http://boim.com/Walkin8r/BL_4WD.apk">
+      Remote control app for Android</A></LI>
+  <LI><A HREF="http://www.aliexpress.com/item/2pcs-Trustfire-AA-14500-900mAh-3-7V-Li-ion-Rechargeable-Battery-New-Free-Shipping-Wholesale/1709214858.html">
+      14500 LiIon batteries</A>.
+    <BR>6 are recommended so that you can alternate batteries from the charger to the ones in-use.</LI>
+  <LI><A HREF="http://www.aliexpress.com/item/UltraFire-WF-139-3-7V-Battery-Charger-for-18650-14500-17500-18500-17670-WF-139-carregador/32266620345.html">
+      LiIon battery charger</A></LI>
+</UL>
 
 <H2>Drills</H2>
-After 3D printing the linkage, holes may need to be precision drilled.
+After 3D printing the linkage, holes may need to be precision machined and/or polished.
 
 <TABLE BORDER>
 <TR><TH>Bit</TH><TH>Notes</TH></TD></TR>
@@ -54,70 +89,58 @@ After 3D printing the linkage, holes may need to be precision drilled.
 <TD>snug, but free around #4-40 screw</TD></TR>
 </TABLE>
 
-<H2>Chassis assembly</H2>
-Chassis assembly is organized in four steps:
-<OL>
-<LI><A HREF="PartsPrep3D.html">Parts preparation</A></LI>
-<LI><A HREF="GluedParts3D.html">Glued parts</A></LI>
-<LI><A HREF="LegAssembly3D.html">Leg sub-assemblies</A></LI>
-<LI><A HREF="PayloadAssembly3D.html">Payload assembly</A>
-<LI><A HREF="MainAssembly3D.html">Main chassis integration</A></LI>
-</OL>
+<H3>Models to print</H3>
+  One can print all parts before starting assembly.
+  However, in the assembly instructions we recommend which parts
+  to print just-in-time.
+  When the chassis is assembled in this manner, if there
+  is a problem with a part, it can be re-printed as needed.
+For most consumer grade 3D printers,
+assembling the chassis takes a similar amount of time
+as printing the chassis, so both tasks can be performed in parallel.
+<P>Printed parts list:
+  <UL>
+    <LI>(4) mainBar.stl</LI>
+    <LI>(2) mainPulley.stl</LI>
+    <LI>(4) AC.stl <font size=-2>(crank arm)</font></LI>
+    <LI>(2) motorMount.stl</LI>
+    <LI>(4) hip.stl</LI>
+    <LI>(4) mirror image of hip.stl</LI>
+    <LI>(4) foot.stl</LI>
+    <LI>(4) mirror image of foot.stl</LI>
+    <LI>(8) CH.stl <font size=-2>(lower crank link)</font></LI>
+    <LI>(8) CD.stl <font size=-2>(upper crank link)</font></LI>
+    <LI>(16) EF.stl <font size=-2>(hip to knee link)</font></LI>
+    <LI>(16) BH.stl <font size=-2>(axle to hamstring link)</font></LI>
+    
+    <LI>(2) motorPulley.stl</LI>
+    <LI>(2) payloadBrace.stl</LI>
+    <LI>(1) payloadPlatform.stl</LI>
+    <LI>(1) payloadPlatformLower.stl</LI>
+    <LI>[optional] payloadLid.stl</LI>
+    <LI>(2) brace.stl <font size=-2>(outer brace)</font></LI>
+    <LI>(4) clip.stl <font size=-2>(retension clips)</font></LI>
+  </UL>
 
-This completes the base of a fairly typical robot chassis, with dual motor control.
+  A notch can be filed into the axles to place the retension clips.
+  <BR>A simple rubber band on the axle will work if you do not wish to notch the axles.
 
-<P>I will be publishing my design for running this chassis over a Bluetooth remote
-control soon.
-It uses an open-source Android app to send control commands to a Bluetooth receiver,
-attached to an Arduino nano compatible microcontroller module.
-The motors are controlled from a fairly common LM298 based motor control module.
+  <H3>Proceed to
+    <A HREF="3D/assembly.html">Assembly instructions</A>.</H3>
 
-<P>Recommended assembly order:
-  <OL><LI>Print and glue parts that need to be glued.
-      <OL type="a"><LI><B>Print pulleys and crank arms (AC)</B>.
-	  <BR>2 main pulleys, 2 motor pulleys, 4 (AC) crank arms.</LI>
-	<LI><B>Print main bars (4)</B></LI>
-	<LI><B>Print motor mounts (2)</B></LI>
-	<LI>Glue motor mounts to main bars</LI>
-	<LI>Glue standoffs to main pulley (for each side)</LI>
-	<LI>Assemble main pulley into main bar (twice, once for each side)</LI>
-	<LI>Glue crankarms (AC) onto main pulley standoffs.
-	  <BR>Make sure they are glued/locked at level 180 degree phase.</LI>
-	<LI><B>Print hips</B></LI>
-	<LI>Glue forks onto Hips.</LI>
-      </OL>
-
-    <LI>Print rest of one pair of leg assemblies
-      <UL>
-	<LI>You should have already printed and glued all 8 hip parts, 4 of each of the 2 mirror symmetries.
-	  <BR>You will need one of each of the symmetries to build a leg pair.
-	  <B>
-	<LI>(4) EF links</LI>
-	<LI>(4) BH links</LI>
-	<LI>(2) CH links
-	  <BR>(2) CD links</LI>
-	<LI>(2) feet, one of each symmetry</LI>
-	</B>
-      </UL>
-      <BR>Clean support material from foot/hamstring node.
-      <BR>Polish 3/16" hole surfaces.
-    </LI>
-    <LI>Construct a pair of legs, check for smoothness of operation.</LI>
-    <LI>Once operation of leg pair has been verified, <B>print rest of another leg pair</B></LI>
-    <LI>Complete assembly of one side of legs (4 legs on a main bar, with motor drive), and mount on axles</LI>
-    <LI>Test motor operation with a small battery.</LI>
-    <LI><B>Print payload mounts</B>, and mount on axles</LI>
-    <LI>Repeat steps 2 to 6 for other set of 4 legs</LI>
-    <LI>Mount other leg set on axles.</LI>
-    <LI>[optional] Print and mount outside brace bars</LI>
-    <LI>Complete payload electronics assembly</LI>
-  </OL>
+    Instructions will be included for the baseline remote-control-over-bluetooth electronics.
+    Users are encouraged to replace the Arduino Nano master controller with
+    a microcontroller and/or software of their choice.
+    The L298N motor driver modules are very common, and many libraries
+    exist to assist custom robot builders in their use.
+    Source code for our basic remote control app includes our custom L298N
+    driver library.
 <HR>
 <P align="right">
-    <IMG SRC="../img/boimE14blu.png">
+    <IMG SRC="img/boimE14blu.png">
 <!-- Created: 131014 -->
 <!-- hhmts start -->
-Last modified: 131007
+
 <!-- hhmts end -->
 </P>
   </body>
