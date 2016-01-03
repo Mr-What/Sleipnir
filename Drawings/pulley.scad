@@ -47,15 +47,17 @@ difference() { union() {
       else          { cylinder(h=2*width,r=Arad,$fn=80);}}
 }}
 
-module pulley2(pr,width,Arad,Doff) {
+module pulley2(pr,width,Arad,Doff,fn=64,fni=120) {
 rr=pr-2.5;
   difference() {
     union() {
       difference() {
         union() {  // main pulley disc
-          translate([0,0,1]) cylinder(r=pr,h=width-2,$fn=120);
-          cylinder(r1=pr-.4*width,r2=pr+.3*width,h=width,$fn=64);
-          cylinder(r2=pr-.6*width,r1=pr+.4*width,h=width,$fn=64);
+	  rotate([0,0,360/fni/4])
+          translate([0,0,1]) cylinder(r=pr,h=width-2,$fn=fni);
+          rotate([0,0,360/fn/2])
+	  cylinder(r1=pr-.4*width,r2=pr+.3*width,h=width,$fn=fn);
+          cylinder(r2=pr-.8*width,r1=pr+.4*width,h=width,$fn=fn);
         }
 	spokeCutOut(pr,width);
       }

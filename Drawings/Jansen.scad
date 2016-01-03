@@ -2,7 +2,7 @@
 // $Id: Jansen.scad 427 2014-08-23 20:42:39Z mrwhat $
 
 // Define PART to one of the following values to generate model for desired part.
-//       HipA, HipB, FootA, FootB, CH, CD, EF, BH, AC, pulley, mainBar, drivePulley
+//       HipA, HipB, FootA, FootB, CH, CD, EF, BH, AC, mainPulley, mainBar, motorPulley
 // For a 2-leg (half-trotter) :  print (2) CH, CD ; (4) EF, BH ; (1) of the others
 // For a production robot, glue a rectangular support/spacer between BH pairs for stiffness
 
@@ -16,7 +16,7 @@
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
 // *****
 
-PART="FootA";
+PART="mainPulley";
 echo(str("PART=",PART));
 
 HoleFuzz = 0.1;  // extra radius (mm) to add to holes to account for printer slop
@@ -266,7 +266,7 @@ sr=25.4 * 3/16/2 + 1.5*HoleFuzz;  // standoff countersink radius
 
     translate([0,0,-1]) cylinder(r=rad4,h=ph+4,$fn=17); // drill hole for central rod
     for (y=[-1,1]) translate([0,AC*y,-1])
-      cylinder(r=3,h=ph,$fn=36);  // screw pass-through for crank arm
+      cylinder(r=2,h=ph,$fn=36);  // screw pass-through for crank arm
   }
 
 /*
@@ -291,7 +291,8 @@ sd=.8; // standoff countersink distance
 }
 
 //module motorPulley() pulley(10,4,1.5+dHoleFuzz,1+dHoleFuzz);
-module motorPulley() pulley2(8,4,1.5+dHoleFuzz,1+dHoleFuzz);
+// let small pulley be polygon to give it some "teeth"
+module motorPulley() pulley2(8,4,1.5+dHoleFuzz,1+dHoleFuzz,fn=12,fni=12);
 
 use <motorMount.scad>
 module motorMountDemo() {
@@ -329,8 +330,8 @@ else if (PART=="CD"   ) crankLink(CD,15,Drad); // build 2
 else if (PART=="EF"   ) monoBracedLinkage(EF); // build 4
 else if (PART=="BH"   ) linkage1(BH,2.5*NodeHeight,Brad+2.5,BradFree+.2,3,Hrad+2.5,rad4);
 else if (PART=="AC"   ) crankArmAC(); 
-else if (PART=="pulley") {  mainPulley(); }
-else if (PART=="drivePulley") { motorPulley(); }
+else if (PART=="mainPulley") {  mainPulley(); }
+else if (PART=="motorPulley") { motorPulley(); }
 else if (PART=="mainBar") {  mainBar(Bx,Ay); }
 else if (PART=="braceBar") {  brace(2*Bx,8,Brad+.1); }
 else if (PART=="spacers") { union(){ spacers(NodeHeight/2,Bhole+3,Brad);
