@@ -2,7 +2,9 @@
 // $Id: Jansen.scad 427 2014-08-23 20:42:39Z mrwhat $
 
 // Define PART to one of the following values to generate model for desired part.
-//       HipA, HipB, FootA, FootB, CH, CD, EF, BH, AC, mainPulley, mainBar, motorPulley
+//       HipA, HipB, FootA, FootB, CH, CD, EF, BH, AC
+//       mainPulley, mainBar, motorPulley, braceBar
+//
 // For a 2-leg (half-trotter) :  print (2) CH, CD ; (4) EF, BH ; (1) of the others
 // For a production robot, glue a rectangular support/spacer between BH pairs for stiffness
 
@@ -16,7 +18,7 @@
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
 // *****
 
-PART="mainPulley";
+PART="demo";
 echo(str("PART=",PART));
 
 HoleFuzz = 0.1;  // extra radius (mm) to add to holes to account for printer slop
@@ -110,7 +112,7 @@ use <pulley.scad>;
 include <JansenMain.scad>
 include <JansenFoot.scad>
 
-module monoBracedLinkage(len) {
+module monoBracedLinkage1(len) {
 lro = Drad+1.8;  // outisde link radius
 difference() { union() { //------------------------ EF
     difference() { hull() {  // main bar
@@ -142,6 +144,46 @@ difference() { union() { //------------------------ EF
     drillHole(rad4);
     translate([len,0,0]) drillHole(rad4);
 }}
+module monoBracedLinkage(len) {
+lro = Drad+2;  // outisde link radius
+difference() {
+  union() { //------------------------ EF
+    //difference() {
+      hull() {  // main bar
+        translate([0,0,0.3]) scale([Frad+.3,Frad+.3,1.8]) sphere(1,$fn=48);
+        translate([len,0,0]) scale([2,rad4+1,2]) sphere(1,$fn=48);
+      }
+      *hull() { translate([0,0,-1.5]) { nodeCyl(BarHeight,Frad-1.5);
+               translate([len,0 ,0])   nodeCyl(BarHeight,1); }}
+    //}
+
+    // non-braced (BED side) reinforcement 
+    translate([len,0,0]) {
+       hull() { translate([-3*lro,0,0]) sphere(.2);
+         translate([0,0,.4]) scale([lro,lro,2]) sphere(1,$fn=36);
+       }
+       hull() { translate([-2*lro,0,2]) sphere(.2);
+         cylinder(r1=rad4+2,r2=rad4+1.3,h=ForkHeight,$fn=36);
+       }
+    }
+
+    *hull() { translate([1.3*Frad,0,1.5]) scale([1,1,1]) sphere(r=1,$fn=16);
+        translate([0,0,BarHeight-1])
+          cylinder(h=ForkHeight-BarHeight+1,r1=Frad-.6,r2=rad4+1.6,$fn=64); }
+    hull() { translate([1.7*Frad,0,1.5]) sphere(.2);
+        cylinder(h=ForkHeight,r1=0.8*Frad,r2=rad4+1.4,$fn=48);
+    }
+
+    *cylinder(h=BarHeight-1,r1=rad4+2.2,r2=rad4+3.3,$fn=32);
+
+    // out-of-plane ridge/brace
+    hull() for(x=[0,len]) translate([x,0,1]) scale([1,1,ForkHeight-1])
+      sphere(r=1,$fn=16);
+  }
+
+  for(x=[0,len]) translate([x,0,0]) drillHole(rad4);
+  translate([-20,-20,-20]) cube([len+40,40,20]);
+}}
 
 //------------------------------------------------------------ crankLink
 // linkage with thin, wide connection for crank side, full node height on other
@@ -172,7 +214,7 @@ difference() { union() {
    translate([len,0,0]) drillHole(rHole);
 }}
 
-module linkage1(len,h0,r0,d0,h1,r1,d1) { difference() { union() {
+module linkage2(len,h0,r0,d0,h1,r1,d1) { difference() { union() {
    hull() { barAnchor(1.5*r0);
       cylinder(h=h0,r1=r0+.2,r2=r0-0.2,$fn=48); }
    translate([len,0,0]) { hull() { barAnchor(-1.5*r1);
@@ -185,6 +227,34 @@ module linkage1(len,h0,r0,d0,h1,r1,d1) { difference() { union() {
    drillHole(d0);
    translate([len,0,0]) drillHole(d1);
 }}
+module linkage1(len,h0,r0,d0,h1,r1,d1) difference() {
+  union() {
+    hull() { translate([2*r0,0,.4]) sphere(.2);
+      intersection() { translate([0,0,h0/2]) cube([16,16,h0],center=true);
+        translate([0,0,h0*.4]) scale([r0,r0,h0+1]) sphere(1,$fn=48);
+      }
+    }
+    translate([len,0,0]) hull() { translate([-2.5*r1,0,.3]) sphere(.2);
+      intersection() { translate([0,0,h1/2]) cube([16,16,h1],center=true);
+        translate([0,0,.5]) scale([r1,r1,h1]) sphere(1,$fn=48);
+      }
+    }
+
+    hull() {
+      translate([ 0 ,0,.6]) scale([3,r0-.2,BarHeight- .6]) sphere(1,$fn=24);
+      translate([len,0,.6]) scale([2,d1+1 ,BarHeight-1.6]) sphere(1,$fn=24);
+    }
+
+    hull() {
+      translate([    d0  ,0,2]) scale([1,1,h0-2]) sphere(1,$fn=24);
+      translate([len-d1,0,0]) scale([.5,.5,BarHeight-.3]) sphere(1);
+    }
+  }
+
+  drillHole(d0);
+  translate([len,0,0]) drillHole(d1);
+  translate([-10,-10,-10]) cube([len+20,20,10]);
+}
 
 module linkage(len,h0,r0,d0,h1,r1,d1) { difference() { union() {
 echo(str("linkage:",len,",",h0,",",r0,",",d0,",",h1,",",r1,",",d1));
@@ -202,10 +272,12 @@ echo(str("linkage:",len,",",h0,",",r0,",",d0,",",h1,",",r1,",",d1));
 }}
 
 // beefier version of a simple linkage, with same ends on both sides
-module brace(len,h0,r0) {
+/*
+module brace1(len,h0,r0) {
 r1=r0+1.7;
-difference() { union() {
-   difference() { hull() { cylinder(h=3,r1=r1+.1,r2=r1-.1,$fn=48);
+difference() {
+  union() {
+    difference() { hull() { cylinder(h=3,r1=r1+.1,r2=r1-.1,$fn=48);
       translate([len,0,0]) cylinder(h=3,r1=r1+.1,r2=r1-.1,$fn=48); }
       translate([1.5,0,-1.5]) hull() { cylinder(h=3,r1=r1-1.6,r2=r1-1.4,$fn=6);
              translate([len-1.5,0,0])  cylinder(h=3,r1=r1-1.6,r2=r1-1.4,$fn=6); }}
@@ -222,6 +294,30 @@ difference() { union() {
    }
    drillHole(r0);
    translate([len,0,0]) drillHole(r0);
+}}
+*/
+module brace(len,h0,r0) {
+r1=r0+1.7;
+difference() {
+  union() {
+    hull() for(x=[-1,1]) translate([x*len/2,0,0.8])
+       scale([1,r0+2,1.8]) sphere(1,$fn=24);
+
+    for(x=[-1,1]) translate([x*len/2,0,0]) hull() {
+      intersection() {
+        translate([0,0,h0/2-.1]) cube([2*r0+8,2*r0+8,h0+0.2],center=true);
+        translate([0,0,1]) scale([r0+2,r0+2,h0+4]) sphere(1,$fn=36);
+      }
+      translate([-x*h0*1.5,0,0]) sphere(.2);
+    }
+
+     hull() for(x=[-1,1]) translate([x*len/2,0,0])
+        scale([1,1,h0-.3]) sphere(1,$fn=24);
+   }
+
+   for(x=[-1,1]) translate([x*len/2,0,0]) drillHole(r0);
+
+   translate([0,0,-5]) cube([len+20,20,10],center=true);
 }}
 
 
@@ -303,7 +399,7 @@ po=8;  // main pulley offset
   translate([0,0,po]) mainPulley();
   #translate([0,0,po-12.7  ]) cylinder(r=25.4*3/16/2,h=25.4/2,$fn=18);
   #translate([0,0,po+6.6-.6]) cylinder(r=25.4*3/16/2,h=25.4/2,$fn=18);
-  translate([0,-38.5,8]) motorPulley();
+  translate([0,-48.5,8]) motorPulley();
   translate([0,0,26.7]) rotate([0,0,90]) crankArmAC();
 }
 
