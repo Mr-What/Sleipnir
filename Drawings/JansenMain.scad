@@ -14,7 +14,7 @@ difference() { union() {
    // Main nodes
    for (a=[-1,1]) translate([dBx*a,0,0]) hull() { 
             translate([-2*a*BradO-a,0,3.5]) sphere(r=.1,$fn=6);
-                nodeCyl(thick+barSep-.5,BradO); }
+                nodeCyl(thick+barSep-.3,BradO); }
    hull() { translate([0,dAy,0]) nodeCyl(thick+2.5,radA+2.6);
             translate([0,-BradO+0.5,4.5]) sphere(r=.1,$fn=6); }
 
