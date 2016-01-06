@@ -13,8 +13,12 @@ module footpad(r) { // pad to help a part stick to plate for 3D printer
 // with a part connected to a linkage bar
 module barAnchor(dx) translate([dx,0,0]) cylinder(h=BarHeight,r1=.8,r2=.6,$fn=6);
 
-module sphereSection(r,h,ar=1.5,off=-.3,fn=64) translate([0,0,h/2]) intersection() {
+module sphereSection(r,h,ar=1.5,off=-.3,fn=48) translate([0,0,h/2]) intersection() {
   cube([2*r,2*r,h],center=true);
   translate([0,0,off*h]) scale([1,1,ar]) sphere(r,$fn=fn);
 }
 
+module linkNode(r,h,ar=1.5,off=-.3,fn=64,dx=20,dy=0,dz=0.3) hull() {
+  sphereSection(r,h,ar,off,fn);
+  translate([dx,dy,dz]) sphere(0.2);
+}
