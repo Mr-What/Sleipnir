@@ -18,7 +18,7 @@
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
 // *****
 
-PART="demo";
+PART="HipA";
 echo(str("PART=",PART));
 
 HoleFuzz = 0.1;  // extra radius (mm) to add to holes to account for printer slop
@@ -94,11 +94,10 @@ acIR = rad4;
 module linkBH(len)
   linkage1(len,2.5*NodeHeight,Brad+2.5,BradFree+.2,2.6,Hrad+1.6,rad4);
 
-if      (PART=="BED"  ) {                   BED(DEleft,DE,DEperp); }
 //else if (PART=="BEDa" ) {                 imBED(DEleft,DE,DEperp); }
 //else if (PART=="BEDb" ) { mirror([1,0,0]) imBED(DEleft,DE,DEperp); }
-else if (PART=="HipA" ) {                 BED1(DEleft,DE,DEperp); }
-else if (PART=="HipB" ) { mirror([1,0,0]) BED1(DEleft,DE,DEperp); }
+if      (PART=="HipA" ) {                 BED(DEleft,DE,DEperp); }
+else if (PART=="HipB" ) { mirror([1,0,0]) BED(DEleft,DE,DEperp); }
 else if (PART=="jHipA" ) { imBEDj(DEleft,DE,DEperp); }
 else if (PART=="jHipB" ) { mirror([1,0,0]) imBEDj(DEleft,DE,DEperp); }
 else if (PART=="FootA") { bracedFoot(FGleft,FG,FGperp); }
@@ -173,7 +172,7 @@ module demo() {
    mainBar(Bx,Ay);
    %translate([0,Ay,20]) mainPulley();
    translate([0,-50,0])  motorPulley();
-   translate([ 50, 30,0]) BED1(DEleft,DE,DEperp);//imBED(DEleft,DE,DEperp);
+   translate([ 50, 30,0]) BED(DEleft,DE,DEperp);//imBED(DEleft,DE,DEperp);
    translate([-26, 44,0]) rotate([0,0,180]) bracedFoot(FGleft,FG,FGperp);
    translate([-12,-16,0]) crankLink(CD,15,Drad);
    translate([-36,-28,0]) crankLink(CH,15,Hrad);

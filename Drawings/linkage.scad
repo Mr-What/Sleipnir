@@ -1,6 +1,6 @@
 // for testing and development
 //BarHeight=3;LinkRad=3;rad4=1.4;
-include <util.scad>
+//include <util.scad>
 
 
 // test cases
@@ -8,7 +8,7 @@ include <util.scad>
 //linkage(44,4,5,1.5,6,5,1.5);
 //linkage1(40.36, 10.725, 4.9, 2.7, 2.6, 4.1, 1.5); // BH for e
 //monoBracedLinkage(40);Drad=2.4;Frad=7;//ForkHeight=4.3;
-brace(80,8,2.4);
+//brace(80,8,2.4);
 
 module crankArm(len,h0,r0,d0,h1,r1,d1) difference() {
   linkage(len,h0,r0,d0,h1,r1,d1,sr0=.05,sr1=.2,ar0=.9,ar1=1.4);
@@ -55,6 +55,8 @@ difference() {
 
   translate([-10,-10,-10]) cube([20+len,20,10]);
 }}
+
+/*
 
 module linkage0(len,h0,r0,d0,h1,r1,d1) difference() {
 echo(str("linkage0:",len,",",h0,",",r0,",",d0,",",h1,",",r1,",",d1));
@@ -104,6 +106,8 @@ difference() { union() { //------------------------ EF
     drillHole(rad4);
     translate([len,0,0]) drillHole(rad4);
 }}
+
+*/
 
 module monoBracedLinkage(len) {
 lro = Drad+2;  // outisde link radius
@@ -168,6 +172,8 @@ echo("linkage1",len,h0,r0,d0,h1,r1,d1);
   translate([-10,-10,-10]) cube([len+20,20,10]);
 }
 
+/*
+
 module brace1(len,h0,r0) {
 r1=r0+1.7;
 difference() {
@@ -190,6 +196,8 @@ difference() {
    drillHole(r0);
    translate([len,0,0]) drillHole(r0);
 }}
+
+*/
 
 module brace(len,h0,r0) {
 r1=r0+1.7;
