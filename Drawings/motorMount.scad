@@ -88,9 +88,9 @@ module motorMount() {
     // cut-out to fit main bar
     translate([0,0,4.1]) rotate([0,180,0]) 
        mainBarBlade(30,2.4+.25+.15,fuzz=.15);
-    translate([0,0,3]) hull() {
-       scale([ 6,8,5]) sphere(1,$fn=12);
-       scale([18,1,6]) sphere(1,$fn=8);
+    hull() {
+       translate([0,0,3]) scale([ 6,8,6]) sphere(1,$fn=12);
+       cube([32,1,16],center=true);
     }
 
     // dove-tail receivers, 2x as high as actual, with 2x radius reduction
