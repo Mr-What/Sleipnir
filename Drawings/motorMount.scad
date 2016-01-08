@@ -3,10 +3,11 @@
 
 // Mount to attach to axles and hold motor drive module
 
-// Distance from top edge of mount to center of motor axle:
-// at 30mm offset, belts were not as tight as I'd like.
-// ?? try 40?
-motorOffset=40;
+// Distance from B-axis centerline to center of motor axle:
+// at 30+8mm offset, belts were not as tight as I'd like.
+// ?? try 45?
+motorOffset=45;
+topOffset=5;  // top of mount is this far from B axis center
 
 // shape of small gearhead motor GA12YN20 from fasttech.com
 module gearheadMotorProxyGA12(pad) { union() {
@@ -48,29 +49,48 @@ bh=4;
 br1=2;
 br2=1.5;
 
-module ulc(dx,dy) { translate([-20+dx,-1.5+dy,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
-module urc(dx,dy) { translate([ 20+dx,-1.5+dy,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
+module ulc(dx,dy) { translate([-20+dx,-topOffset+dy,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
+module urc(dx,dy) { translate([ 20+dx,-topOffset+dy,0]) cylinder(h=bh,r1=br1,r2=br2,$fn=6); }
 module llc() { translate([-6,-motorOffset-2,0]) cylinder(h=bh+2,r1=br1,r2=.5,$fn=6); }
 module lrc() { translate([ 6,-motorOffset-2,0]) cylinder(h=bh+2,r1=br1,r2=.5,$fn=6); }
 
 dtFuzz = 0.08;  // fuzz to add to dove tail slots
 
+include <util.scad>
+include <JansenMain.scad>  // for attachment cut-out
+
+
 module motorMount() {
   difference() {
     union() {
-      hull() { ulc(0,0); urc(0,0); }
-      hull() { ulc(2,-1); urc(-2,-1); }
-      hull() { ulc(0,0); llc(); }
-      hull() { urc(0,0); lrc(); }
-      for (a=[-1,1]) hull() { 
-        translate([.6*a, -2,0]) cylinder(h=bh  ,r1=2,r2=0.5,$fn=6);
-        translate([ 7*a,-motorOffset+2,0]) cylinder(h=bh+2,r1=2,r2=0.5,$fn=6);
+      hull() for(x=[-1,1]) {
+        translate([x*22,-topOffset,0])
+            sphereSection(4,3.8,ar=1,off=.1);
+        translate([x*(tabX+4),-topOffset-2.5,0])
+            sphereSection(3.4,3.8,ar=1,off=.1);
+      }
+      for(x=[-1,1]) {
+         blade([x*21,-topOffset  -1,.4],4,1.8,
+               [x*5 ,-motorOffset-3,.4],2,2.2);
+         blade([x*22,-topOffset  -3,.8],1,3,
+               [x*5 ,-motorOffset-3, 1],1.5,8,fn=17);
+
+         blade([x*18,-topOffset  -3,.4],1,3,
+               [-x*8.5,-motorOffset+6,.8],1,7,fn=17);
       }
 
       hull() for (a=[-1,1]) {
         translate([5*a,-motorOffset+6,0]) cylinder(h=bh*2,r1=3.2,r2=3,$fn=6);
         translate([4*a,-motorOffset-2,0]) cylinder(h=20  ,r1=4.6,r2=4,$fn=6);
       }
+    }
+
+    // cut-out to fit main bar
+    translate([0,0,4.1]) rotate([0,180,0]) 
+       mainBarBlade(30,2.4+.25+.15,fuzz=.15);
+    translate([0,0,3]) hull() {
+       scale([ 6,8,5]) sphere(1,$fn=12);
+       scale([18,1,6]) sphere(1,$fn=8);
     }
 
     // dove-tail receivers, 2x as high as actual, with 2x radius reduction
@@ -82,6 +102,8 @@ module motorMount() {
     // at 30mm offset, belts were not as tight as I'd like.
     // ?? try 40?
     #translate([0,-motorOffset,3.9]) gearheadMotorProxyGA12(0.4);
+
+    translate([-40,-motorOffset-30,-20]) cube([80,50+motorOffset,20]);
   }
 }
 
