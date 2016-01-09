@@ -1,5 +1,4 @@
-// $URL: svn+ssh://mrwhat@ssh.boim.com/home/mrwhat/svn/Walker/trunk/Jansen.scad $
-// $Id: Jansen.scad 427 2014-08-23 20:42:39Z mrwhat $
+// https://github.com/Mr-What/Sleipnir/blob/master/Drawings/Jansen.scad
 
 // Define PART to one of the following values to generate model for desired part.
 //       HipA, HipB, FootA, FootB, CH, CD, EF, BH, AC
@@ -18,7 +17,7 @@
 hingeStyle = "spacer"; //6standoff";  // spacer or standoff
 // *****
 
-PART="HipA";
+PART="motor";
 echo(str("PART=",PART));
 
 HoleFuzz = 0.1;  // extra radius (mm) to add to holes to account for printer slop
@@ -96,26 +95,27 @@ module linkBH(len)
 
 //else if (PART=="BEDa" ) {                 imBED(DEleft,DE,DEperp); }
 //else if (PART=="BEDb" ) { mirror([1,0,0]) imBED(DEleft,DE,DEperp); }
-if      (PART=="HipA" ) {                 BED(DEleft,DE,DEperp); }
-else if (PART=="HipB" ) { mirror([1,0,0]) BED(DEleft,DE,DEperp); }
-else if (PART=="jHipA" ) { imBEDj(DEleft,DE,DEperp); }
-else if (PART=="jHipB" ) { mirror([1,0,0]) imBEDj(DEleft,DE,DEperp); }
-else if (PART=="FootA") { bracedFoot(FGleft,FG,FGperp); }
-else if (PART=="FootB") { mirror([1,0,0]) bracedFoot(FGleft,FG,FGperp); }
+if      (PART=="HipA" )                 BED(DEleft,DE,DEperp);
+else if (PART=="HipB" ) mirror([1,0,0]) BED(DEleft,DE,DEperp);
+else if (PART=="jHipA" ) imBEDj(DEleft,DE,DEperp);
+else if (PART=="jHipB" ) mirror([1,0,0]) imBEDj(DEleft,DE,DEperp);
+else if (PART=="FootA") bracedFoot(FGleft,FG,FGperp);
+else if (PART=="FootB") mirror([1,0,0]) bracedFoot(FGleft,FG,FGperp);
 else if (PART=="CH"   ) crankLink(CH,15,Hrad); // build 2
 else if (PART=="CD"   ) crankLink(CD,15,Drad); // build 2
 else if (PART=="EF"   ) monoBracedLinkage(EF); // build 4
 else if (PART=="BH"   ) linkBH(BH);
 else if (PART=="AC"   ) crankArmAC(); 
-else if (PART=="mainPulley") {  mainPulley(); }
-else if (PART=="motorPulley") { motorPulley(); }
-else if (PART=="mainBar") {  mainBar(Bx,Ay); }
-else if (PART=="braceBar") {  brace(2*Bx,8,Brad+.1); }
+else if (PART=="mainPulley") mainPulley();
+else if (PART=="motorPulley") motorPulley();
+else if (PART=="mainBar")  mainBar(Bx,Ay);
+else if (PART=="braceBar") brace(2*Bx,8,Brad+.1);
+else if (PART=="motorMount") motorMount();
 //else if (PART=="spacers") { union(){ spacers(NodeHeight/2,Bhole+3,Brad);
 //   translate([0,-7.5*LinkRad*1.414+1,0]) spacers(NodeHeight/2,LinkRad,rad4); }}
-else if (PART=="motor") { motorMountDemo(); }
+else if (PART=="motor") motorMountDemo();
 //else if (PART=="demo") { //show all unique parts
-else { demo(); }
+else demo();
 
 //=============================================================================
 
@@ -152,15 +152,18 @@ module motorPulley() pulley2(8,4,1.5+dHoleFuzz,1+dHoleFuzz,fn=12,fni=12);
 use <motorMount.scad>
 module motorMountDemo() {
 po=8;  // main pulley offset
+//difference() { union() {
   translate([0,-Ay,0]) mainBar(Bx,Ay);
-  translate([0,-Ay,22]) rotate([0,180,0]) mainBar(Bx,Ay);
-  translate([0,-Ay-5.4,4]) rotate([0,180,0]) motorMount();
-  translate([0,0,po]) mainPulley();
+  translate([0,-Ay,22.2]) rotate([0,180,0]) mainBar(Bx,Ay);
+  translate([0,-Ay,3.85]) rotate([0,180,0]) motorMount();
+  %translate([0,0,po]) mainPulley();
   #translate([0,0,po-12.7  ]) cylinder(r=25.4*3/16/2,h=25.4/2,$fn=18);
   #translate([0,0,po+6.6-.6]) cylinder(r=25.4*3/16/2,h=25.4/2,$fn=18);
   translate([0,-48.5,8]) motorPulley();
   translate([0,0,26.7]) rotate([0,0,90]) crankArmAC();
+  translate([0,0,-4.9]) rotate([180,0,-90]) crankArmAC();
 }
+//translate([-Bx,-Ay,-10]) cube([2*Bx,50,50]);}}
 
 module crankArmAC() {
   //echo("AC:",AC,acH0,acOR,acIR,acH1,acOR,acIR); 
@@ -178,9 +181,9 @@ module demo() {
    translate([-36,-28,0]) crankLink(CH,15,Hrad);
    translate([-73,-15,0]) monoBracedLinkage(EF);
    translate([-60, 15,0]) crankArmAC(); 
-
    translate([ 25, 15,0]) linkBH(BH);
    translate([40,-42,0]) rotate([0,0,50]) brace(2*Bx,8,Brad);
+   translate([-36,-35,0]) motorMount();
 }
 
 //=====================================================

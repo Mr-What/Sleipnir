@@ -70,8 +70,8 @@ difference() {
   translate([0,dAy, -.1]) drillHole(radA); // a little more for spinning axle
   translate([-dConX,0,0]) {
     cylinder(h=22,r=rad4,$fn=18,center=true);
-    translate([0,0,5.5]) cylinder(r1=tr-2.4,r2=tr-1.4,h=conZ+lip+1,$fn=6);
-    translate([0,0,-1 ]) cylinder(r1=4,r2=3,h=4,$fn=6);  
+    translate([0,0,6.5]) cylinder(r1=tr-2.4,r2=tr-1.4,h=conZ,$fn=6);
+    translate([0,0,-1 ]) cylinder(r1=4,r2=3,h=5,$fn=6);  
   }
   translate([ dConX,0,-1]) {
      cylinder(h=33,r=.9,$fn=16); // pilot hole for plastic screw
@@ -83,9 +83,9 @@ difference() {
 
 //translate([64,0,0]) cube([50,30,80],center=true);
 
-  // look at cross-section of tab to debug
-  //#translate([dBx-3*BradO,-10,-1]) cube([15,20,25]);
-  //translate([-dBx,0,-1]) cube([2*dBx,20,20]);
+// look at cross-section of tab to debug
+//#translate([dBx-3*BradO,-10,-1]) cube([15,20,25]);
+//translate([-dBx,0,-1]) cube([2*dBx,20,20]);
   translate([-dBx-20,-20,-20]) cube([2*dBx+40,40,20]);
 }}
 
