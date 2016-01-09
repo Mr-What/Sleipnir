@@ -42,16 +42,12 @@ hull() {
 
 module BEDmainSideRail(x,dPerp,ph) {
 x2=(x<0)?x+2:x-2;
-  hull() {
-    translate([x2,0,.6]) scale([3,1,1.5]) sphere(1,$fn=36);
-    translate([0,dPerp,0.6]) scale(3,1,1.5) sphere(1,$fn=36);
-  }
-  hull() {
-     translate([x,-1,  0]) scale([1,1,2]) sphere(1,$fn=16);
-     translate([0,dPerp+2,1]) scale([1,1,ph]) sphere(1,$fn=16);
-  }
+x1=(x<0)?x-1:x+1;
+  blade([x2,0,.6],2.5,1.5,  [0,dPerp,0.4],3,1.5);
+  blade([x1,-1,.4],1,3.5,   [0,dPerp+2,1],1,ph,fn=16);
 }
 
+/*
 module BEDrails(dLeft,dPerp,dRight,ph,rp) {
 union() {
    BEDsideRail(-dLeft,dPerp,ph);
@@ -72,23 +68,20 @@ union() {
      translate([dRight+2,1,0]) cylinder(h=4,r1=3,r2=2,$fn=6);
    }
 }}
+*/
 
 module BEDmainRails(dLeft,dPerp,dRight,ph,rp) union() {
    BEDmainSideRail(-dLeft,dPerp,ph);
    BEDmainSideRail(dRight,dPerp,ph);
-   hull() { // vert bar part, DE
-     translate([-dLeft,-1,1]) scale([1,1,5]) sphere(1,$fn=36);
-     translate([dRight+1,-1,1]) scale([1,1,NodeHeight-2]) sphere(1,$fn=36);
-   }
-   // horiz, flat part of DE segment
-   hull() {
-     translate([-dLeft+1,0,.4]) scale([2,3,1.5]) sphere(1,$fn=36);
-     translate([dRight-2,0,.4]) scale([2,2,1.5]) sphere(1,$fn=36);
-   }
+
+   blade([-dLeft  ,-1,1.5],1,6,     // vert DE
+         [dRight+3,-1,0.5],1.5,NodeHeight-1,fn=17);
+   blade([-dLeft+1,0,.4],3.5,1.5,   // DE horiz
+         [dRight-2,0,.4],3,2);
 
    // extra brace on D node
    hull() { 
-     translate([dRight-4,6,0]) scale([1,1,3]) sphere(1,$fn=16);
+     translate([dRight-4,6,0]) scale([1,1,4]) sphere(1,$fn=16);
      translate([dRight+4,1,0]) sphereSection(3,4);
    }
 }
@@ -432,6 +425,6 @@ BEDmain(dLeft,dBase,dPerp);
 
 // add other side of fork
 //translate([-dLeft+0.7*forkLen,1.2*forkLen,0]) rotate([0,0,40])
-translate([-9,8,0]) rotate([0,0,55])
+translate([0,14,0]) rotate([0,0,220])
     forkTabF(ForkHeight+.1,Drad+2,rad4+1.4,forkLen);
 }
