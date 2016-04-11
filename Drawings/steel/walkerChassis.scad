@@ -3,78 +3,82 @@ Ay=3.318;
 AC=17.5;
 Bx=53.83;
 
-loY=-40;  // location of lower brace beams
-loX= 20;
+loY=-60;  // location of lower brace beams
+loX= 10;
+
+zBar=90;
 
 $fn=8;
 
 for (a=[-1,1]) {
-  %translate([0,0, 80*a]) legProxy();
-  %translate([0,0,100*a]) legProxy();
-  translate([0,0,90*a]) mainBar();
-  translate([Bx*a,0,0]) cylinder(r=2.5,h=300,$fn=16,center=true); // main axle
-  translate([-20*a,-40,0]) cube([2.5,2.5,300],center=true); // lower rails
+  %translate([0,0,(zBar-10)*a]) legProxy();
+  %translate([0,0,(zBar+10)*a]) legProxy();
+  translate( [0,0, zBar    *a]) mainBar();
 
-  hull() for (b=[-1,1]) translate([ Bx*b, 0 ,70*a]) sphere(1); // arm guard bar
-  hull() for (b=[-1,1]) translate([loX*b,loY,70*a]) sphere(1); // outer foot bar
+  %translate([Bx*a,0,0]) cylinder(r=1,h=120,$fn=16,center=true); // main axle
+  for (b=[-1,1]) translate([Bx*b,0,zBar*a]) {
+     color([0,0,1,1]) translate([0,0,-6*a])
+     cylinder(r=1.9,h=60,$fn=16,center=true); // axle
+
+     // axle brace sleves... shorter on outside
+     translate([0,0, 20*a]) cylinder(r=2.5,h=6 ,$fn=16,center=true);
+     translate([0,0,-26*a]) cylinder(r=2.5,h=18,$fn=16,center=true);
+  }
+
+  translate([loX*a,loY,0]) {
+     cube([3.8,3.8,217],center=true); // lower rails
+     for(z=[-1,1]) translate([0,0,z*108])
+       color([0,0,1,1]) cube([2.5,2.5,6],center=true); // lower rail pegs
+  }
+  translate([0,loY+3.8,a*103]) cube([2*loX+4,3.8,3.8],center=true);
+
+  hull() for (b=[-1,1]) translate([ Bx*b, 0 ,71*a]) sphere(1); // arm guard bar
+  //hull() for (b=[-1,1]) translate([loX*b,loY,71*a]) sphere(1); // outer foot bar
   for (b=[-1,1]) {
     hull() { // outer diagonal
       translate([ Bx*b, 0 ,70*a]) sphere(1);
       translate([loX*b,loY,70*a]) sphere(1);
     }
-    hull() { // inner support on outside trapaoid
-      translate([  5*b, 0 ,70*a]) sphere(1);
-      translate([loX*b,loY,70*a]) sphere(1);
-    }
   }
 
-  hull() { // center front trap
-    translate([loX,loY, 2*a]) sphere(1);
-    translate([ Bx, 0 ,25*a]) sphere(1);
-  }
-  hull() { // outer front diag
+  *hull() { // outer front diag
     translate([loX,loY,68*a]) sphere(1);
     translate([ Bx, 0 ,40*a]) sphere(1);
   }
-  hull() { // inner back trap
-    translate([-loX,loY,25*a]) sphere(1);
-    translate([ -Bx, 0 , 5*a]) sphere(1);
-  }
-  hull() { // outer back
-    translate([-loX,loY,35*a]) sphere(1);
-    translate([ -Bx, 0 ,65*a]) sphere(1);
+  for(x=[-1,1]) {
+     #hull() { // inner back trap
+       translate([x*loX,loY,25*a]) sphere(1);
+       translate([x*Bx, 0 , 5*a]) sphere(1);
+     }
+     hull() { // outer back
+       translate([x*loX,loY,35*a]) sphere(1);
+       translate([x*Bx , 0 ,60*a]) sphere(1);
+     }
   }
 
   for (b=[-1,1]) { // outside diagonal brace
     hull() {
-      translate([loX*b,loY,140*a]) sphere(1);
-      translate([ Bx*b, 0 ,110*a]) sphere(1);
-    }
-    hull() {
-      translate([ Bx*b, 0 ,140*a]) sphere(1);
-      translate([loX*b,loY,110*a]) sphere(1);
-    }
-    hull() {
       translate([loX*b,loY,110*a]) sphere(1);
       translate([ Bx*b, 0 ,110*a]) sphere(1);
     }
   }
-  hull() for(b=[-1,1]) translate([loX*b,loY,140*a]) sphere(1);
   hull() for(b=[-1,1]) translate([ Bx*b, 0 ,110*a]) sphere(1);
 
-
-  hull() { // center foot low diag
+  *hull() { // center foot low diag
     translate([ loX,loY, 5*a]) sphere(1);
     translate([-loX,loY,30*a]) sphere(1);
   }
-  hull() {
+  *hull() {
     translate([-loX,loY,40*a]) sphere(1);
     translate([ loX,loY,70*a]) sphere(1);
   }
-  for (b=[-1,1]) hull() {  // outer low X
+  *for (b=[-1,1]) hull() {  // outer low X
     translate([-loX*b,loY,130*a]) sphere(1);
     translate([ loX*b,loY, 70*a]) sphere(1);
   }
+
+  // expanded mesh floor
+  color([0,.2,.8,.2]) translate([0,loY+2,0]) cube([2*loX,1,130],center=true);
 
 }
 
@@ -87,11 +91,9 @@ module mainBar() {
   }
 
 }
-module legProxy() {
-
+module legProxy() scale([1,1,12]) {
   legProxy1();
   mirror([1,0,0]) legProxy1();
-
 }
 
 // measurements from drawing, center pixel 600,300, 4 pixels/cm
