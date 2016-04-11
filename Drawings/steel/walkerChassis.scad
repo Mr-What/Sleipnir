@@ -13,8 +13,8 @@ $fn=8;
 for (a=[-1,1]) {
   %translate([0,0,(zBar-10)*a]) legProxy();
   %translate([0,0,(zBar+10)*a]) legProxy();
-  translate( [0,0, zBar    *a]) mainBar();
-  translate([0,0,a*(zBar+20)]) rotate([0,90*(a+1),0]) outerCap();
+  translate( [0,0, zBar    *a]) color([.2,.2,.8,1]) mainBar();
+  #translate([0,0,a*(zBar+20)]) rotate([0,90*(a+1),0]) outerCap();
 }
 basket();
 
@@ -22,15 +22,19 @@ module basket() {
   for(a=[-1,1]) {
     %translate([Bx*a,0,0]) cylinder(r=1,h=120,$fn=16,center=true); // main axle
     for (b=[-1,1]) translate([Bx*b,0,zBar*a]) {
-       color([0,0,1,1]) translate([0,0,-6*a])
+       color([0,0,1,.6]) translate([0,0,-6*a])
        cylinder(r=1.9,h=60,$fn=16,center=true); // axle
 
        // axle brace sleves
        translate([0,0,-26*a]) cylinder(r=2.5,h=18,$fn=16,center=true);
     }
 
-    translate([loX*a,loY,0]) {
-       color([0,0,1,1]) cube([2.5,2.5,230],center=true); // lower rails
+    //color([.6,.8,0,1]) 
+    translate([loX*a,loY,0]) difference() { 
+       cube([2.5,2.5,230],center=true); // lower rails
+
+       // remove center section for wide platform version
+       cube([3,3,66],center=true);
     }
 
     hull() for (b=[-1,1]) translate([ Bx*b, 0 ,71*a]) sphere(1); // arm guard bar
@@ -38,22 +42,18 @@ module basket() {
     for (b=[-1,1]) {
       hull() { // outer diagonal
         translate([ Bx*b, 0 ,70*a]) sphere(1);
-        translate([loX*b,loY,70*a]) sphere(1);
+        translate([20*b,loY+2,70*a]) sphere(1);
       }
     }
 
-    *hull() { // outer front diag
-      translate([loX,loY,68*a]) sphere(1);
-      translate([ Bx, 0 ,40*a]) sphere(1);
-    }
     for(x=[-1,1]) {
-       #hull() { // inner back trap
-         translate([x*loX,loY,25*a]) sphere(1);
-         translate([x*Bx, 0 , 5*a]) sphere(1);
+       hull() { // inner back trap
+         translate([x*35,loY+4,22*a]) sphere(1);
+         translate([x*Bx,  0  , 5*a]) sphere(1);
        }
        hull() { // outer back
-         translate([x*loX,loY,35*a]) sphere(1);
-         translate([x*Bx , 0 ,60*a]) sphere(1);
+         translate([x*35,loY+2,31*a]) sphere(1);
+         translate([x*Bx,  0  ,60*a]) sphere(1);
        }
     }
 
@@ -73,10 +73,16 @@ module basket() {
     // may do something more complicated for payload bay,
     // but for now, just stich sides together
     translate([a*(Bx+2),2,0]) cube([3.8,3.8,140],center=true);
+
+    translate([34*a,loY+6,0]) cube([2.5,2.5,138],center=true);
+    translate([0,loY+3,67*a]) cube([70,3.8 ,3.8],center=true);
   }
 
-  // expanded mesh floor
-  color([0,.2,.8,.2]) translate([0,loY+2,0]) cube([2*loX,1,130],center=true);
+  for(z=[-1,0,1]) translate([0,loY+3,34*z])
+     cube([70,2.5,2.5],center=true);
+  color([0,.2,.8,.2]) // expanded mesh floor
+     translate([0,loY+5,0]) cube([68,.5,130],center=true);
+     //translate([0,loY+2,0]) cube([2*loX,1,130],center=true);
 }
 
 module mainBar() {
