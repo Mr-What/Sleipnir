@@ -57,31 +57,33 @@ module basket() {
        }
     }
 
-    *hull() { // center foot low diag
-      translate([ loX,loY, 5*a]) sphere(1);
-      translate([-loX,loY,30*a]) sphere(1);
-    }
-    *hull() {
-      translate([-loX,loY,40*a]) sphere(1);
-      translate([ loX,loY,70*a]) sphere(1);
-    }
-    *for (b=[-1,1]) hull() {  // outer low X
-      translate([-loX*b,loY,130*a]) sphere(1);
-      translate([ loX*b,loY, 70*a]) sphere(1);
-    }
-
     // may do something more complicated for payload bay,
     // but for now, just stich sides together
     translate([a*(Bx+2),2,0]) cube([3.8,3.8,140],center=true);
 
-    translate([34*a,loY+6,0]) cube([2.5,2.5,138],center=true);
-    translate([0,loY+3,67*a]) cube([70,3.8 ,3.8],center=true);
+    translate([34*a,loY+2.7,0]) difference() {
+       cube([2.5,2.5,138],center=true);
+       translate([-.4*a,.4,0]) cube([2.5,2.5,139],center=true);
+    }
+    translate([0,loY+3,67*a]) rotate([0,90*(a+1),0]) difference() {
+       cube([70,3.8,3.8],center=true);
+       translate([0,.4,.4]) cube([72,3.8 ,3.8],center=true);
+    }
+    hull() {  // central floor cross
+      translate([ 34*a,loY+1, 32]) sphere(1);
+      translate([-34*a,loY+1,-32]) sphere(1);
+    }
   }
 
-  for(z=[-1,0,1]) translate([0,loY+3,34*z])
+  //for(z=[-1,0,1])
+  for(z=[-1,1])
+  translate([0,loY+.4,34*z]) rotate([0,(z==1)?180:0,0]) difference() {
      cube([70,2.5,2.5],center=true);
+     translate([0,-.4,-.4]) cube([71,2.5,2.5],center=true);
+  }
+  translate([0,loY+2,0]) rotate([90,0,0]) cylinder(r=4,h=.4,$fn=32);
   color([0,.2,.8,.2]) // expanded mesh floor
-     translate([0,loY+5,0]) cube([68,.5,130],center=true);
+     translate([0,loY+2,0]) cube([68,.5,134],center=true);
      //translate([0,loY+2,0]) cube([2*loX,1,130],center=true);
 }
 
