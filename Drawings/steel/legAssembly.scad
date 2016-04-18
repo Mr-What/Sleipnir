@@ -16,12 +16,24 @@ FGperp = sqrt(FH*FH - FGleft*FGleft);
 echo(str("DEleft=",DEleft,"   DEperp=",DEperp));
 echo(str("FGleft=",FGleft,"   FGperp=",FGperp));
 
-//a=0;
-//legAssembly(a,0);
-//mirror([1,0,0]) legAssembly(180-a,1.2);
-legAssembly(0);
+a=44;
+legAssembly(a,0);
+mirror([1,0,0]) legAssembly(180-a,1.2);
+//legAssembly(100);
+
+%translate([0,-93,0]) cube([200,2,2],center=true);
+
+// -----------------------------------------------------------------
+
+// plot a link shadow, a different way, to check kinematic correctness
+module checkLink(xa,ya,xb,yb,ab) {
+  *translate([(xa+xb)/2,(ya+yb)/2,-9])
+    rotate([0,0,atan2(yb-ya,xb-xa)]) cube([ab,1,1],center=true);
+}
 
 function triK1(ax,ay,ca,bx,by,cb) = (cb*cb - ca*ca + ax*ax -bx*bx +ay*ay -by*by)/(2*(ax-bx));
+
+// ===================================================================
  
 module legAssembly(ang=0,linkOffset=0) {
 
@@ -114,8 +126,8 @@ checkLink(-Bx,0,xH,yH,BH);
 translate([0,0,linkOffset-.5]) CDlink(xC,yC,xD,yD);
 checkLink(xC,yC,xD,yD,CD);
 
-EFlink(xE,yE,xF,yF);
-//EFlink();
+//%EFlink1(xE,yE,xF,yF);
+translate([xF,yF,0]) rotate([0,0,atan2(yE-yF,xE-xF)]) EFlink();
 checkLink(xE,yE,xF,yF,EF);
 
 translate([0,0,linkOffset+1.8]) CDlink(xC,yC,xH,yH);
@@ -128,17 +140,17 @@ checkLink(xF,yF,xH,yH,FH);
 
 } // end module legAssembly()
 
-// plot a link shadow, a different way, to check kinematic correctness
-module checkLink(xa,ya,xb,yb,ab) {
-  %translate([(xa+xb)/2,(ya+yb)/2,-9])
-    rotate([0,0,atan2(yb-ya,xb-xa)]) cube([ab,1,1],center=true);
-}
+// -----------------------------------------------------------------
 
 module foot() difference() {
   union() {
-    hull() {
+    hull() {  // FG
       cube([4,2.6,2.6],center=true);
       translate([FG-1.3,0,0]) cylinder(r=1.3,h=2.6,$fn=24,center=true);
+    }
+    for (z=[-1,1]) hull() {
+      translate([-5,2,1.5*z])scale([3,5,1])cylinder(r=1,h=.4,$fn=64,center=true);
+      translate([ 8,0,1.5*z])cylinder(r=.3,h=.4,center=true);
     }
     translate([FGleft,FGperp-5,0]) cube([2.6,6,2.6],center=true);
     translate([FGleft,FGperp-5,4.8]) cube([2.6,6,2.6],center=true);
@@ -170,9 +182,9 @@ $fn=12;
 module hip() {
   //color("Black") cube([3,3,2.5],center=true);
   difference() {
-    translate([DE/2,0,0]) cube([DE+4,2.6,2.6],center=true);
-    #cylinder(r=.5,h=4,center=true);
-    cube([5,3,2],center=true);
+    translate([DE/2,0,0]) cube([DE+3,2.6,2.6],center=true);
+    #cylinder(r=.5,h=6,center=true);
+    cube([7,3,2],center=true);
 
     translate([DE,0,0]) {
       #cylinder(r=.25,h=8,center=true);
@@ -197,19 +209,33 @@ echo("CD",cx,cy,dx,dy);
   translate([dx,dy,0]) cylinder(r=1.4,h=.7,$fn=24,center=true);
   translate([cx,cy,0]) cylinder(r=1.4,h=.7,$fn=24,center=true);
   hull() {
-    translate([dx,dy,0]) cylinder(r=.7,h=.7,$fn=24,center=true);
-    translate([cx,cy,0]) cylinder(r=.7,h=.7,$fn=24,center=true);
+    translate([dx,dy,0]) cylinder(r=.65,h=1.3,$fn=24,center=true);
+    translate([cx,cy,0]) cylinder(r=.65,h=1.3,$fn=24,center=true);
   }
-  //%translate([CD/2,0,0]) cube([CD-2,1.4,1.4],center=true);
 }
 
-module EFlink(ex=0,ey=0,fx=EF,fy=0) {
+module EFlink() {
+  difference() {
+     union() {
+       color([.3,.3,.4,.9]) {
+         translate([   2,0,0]) cube([7,3,2],center=true);
+         translate([EF-2,0,0]) cube([7,3,2],center=true);
+       }
+       translate([EF/2,0,0]) cube([EF-6,2.6,2.6],center=true);
+     }
+
+     translate([EF,0,0]) cylinder(r=.7,h=3,center=true);
+                         cylinder(r=.7,h=3,center=true);
+  }
+}
+
+module EFlink1(ex=0,ey=0,fx=EF,fy=0) {
 echo("EF",ex,ey,fx,fy);
   difference() {
      union() {
-       color([.3,.3,.4,1]) {
-         translate([ex,ey,0]) cube([4,3,3],center=true);
-         translate([fx,fy,0]) cube([4,3,3],center=true);
+       color([.3,.3,.4,.9]) {
+         translate([ex,ey,0]) cube([4,3,2],center=true);
+         translate([fx,fy,0]) cube([4,3,2],center=true);
        }
        hull() {
          translate([ex,ey,0]) cylinder(r=1.3,h=2.6,center=true);
@@ -229,7 +255,17 @@ module BHlinks() {
 }
 module BHlink() {
   cylinder(r=1.4,h=6,$fn=24);
-  translate([BH/2-1,0,1.3]) cube([BH-2,2.5,2.5],center=true);
+
+  //%translate([BH/2-1,0,1.3]) cube([BH-2,2.5,2.5],center=true);
+  for (q=[-1,1]) hull() {
+    translate([  0 ,1.5*q,1]) sphere(0.8);
+    translate([BH-3,1  *q,1]) sphere(0.8);
+  }
+  hull() {
+    translate([  0 ,0,5]) sphere(0.8);
+    translate([BH-3,0,1]) sphere(0.8);
+  }
+
   translate([BH,0,-.3]) difference() {
      hull() {
        cylinder(r=3,h=.33,$fn=36);
