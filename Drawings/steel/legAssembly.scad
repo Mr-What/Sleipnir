@@ -16,7 +16,7 @@ FGperp = sqrt(FH*FH - FGleft*FGleft);
 echo(str("DEleft=",DEleft,"   DEperp=",DEperp));
 echo(str("FGleft=",FGleft,"   FGperp=",FGperp));
 
-a=44;
+a=360*$t;
 legAssembly(a,0);
 mirror([1,0,0]) legAssembly(180-a,1.2);
 //legAssembly(100);
