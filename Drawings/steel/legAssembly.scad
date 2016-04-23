@@ -123,15 +123,19 @@ checkLink(-Bx,0,xH,yH,BH);
 
 //translate([xC,yC,2]) rotate([0,0,142]) 
 //   CDlink();
-translate([0,0,linkOffset-.5]) CDlink(xC,yC,xD,yD);
+//translate([0,0,linkOffset-.5]) CDlink(xC,yC,xD,yD);
+translate([xC,yC,linkOffset-.5]) rotate([0,0,atan2(yD-yC,xD-xC)])
+  mirror([0,0,(linkOffset>0)?1:0]) crankLink(CD);
 checkLink(xC,yC,xD,yD,CD);
+
+//translate([0,0,linkOffset+1.8]) CDlink(xC,yC,xH,yH);
+translate([xC,yC,linkOffset+1.8]) rotate([0,0,atan2(yH-yC,xH-xC)])
+  mirror([0,0,(linkOffset>0)?1:0]) crankLink(CH);
+checkLink(xC,yC,xH,yH,CH);
 
 //%EFlink1(xE,yE,xF,yF);
 translate([xF,yF,0]) rotate([0,0,atan2(yE-yF,xE-xF)]) EFlink();
 checkLink(xE,yE,xF,yF,EF);
-
-translate([0,0,linkOffset+1.8]) CDlink(xC,yC,xH,yH);
-checkLink(xC,yC,xH,yH,CH);
 
 footRot = atan2(yH-yF,xH-xF)-atan2(FGperp,FGleft);
 translate([xF,yF,0]) rotate([0,0,footRot])
@@ -183,15 +187,15 @@ module hip() {
   //color("Black") cube([3,3,2.5],center=true);
   difference() {
     translate([DE/2,0,0]) cube([DE+3,2.6,2.6],center=true);
-    #cylinder(r=.5,h=6,center=true);
+    cylinder(r=.5,h=6,center=true);
     cube([7,3,2],center=true);
 
     translate([DE,0,0]) {
-      #cylinder(r=.25,h=8,center=true);
+      cylinder(r=.25,h=8,center=true);
       cube([5,3,2],center=true);
     }
   }
-  translate([DE-DEleft,-DEperp,-1.5]) cylinder(r=1.4,h=8,$fn=36);
+  translate([DE-DEleft,-DEperp,-1.2]) cylinder(r=1.4,h=7.2,$fn=36);
   hull() {
     translate([DE-DEleft,-DEperp,0]) sphere(.8);
     translate([8,0,0]) sphere(.8);
@@ -202,6 +206,15 @@ module hip() {
   }
   translate([DE/2,-20,0]) rotate([0,90,0]) cylinder(r=.8,h=20,center=true);
   translate([DE-DEleft,-DEperp,4]) rotate([-105,0,0]) cylinder(r=.8,h=14);
+}
+
+module crankLink(dx=CD) {
+  cylinder(r=1.4,h=.7,$fn=24,center=true);
+  color([0.3,0.3,0.4,0.9]) translate([dx-1,0,.6]) difference() {
+    cube([5,2.7,2.2],center=true);
+    #translate([1,0,0]) cylinder(r=.64,h=11,center=true);
+  }
+  translate([dx/2-1,0,0]) cube([dx-3,1.3,1.3],center=true);
 }
 
 module CDlink(cx=0,cy=0,dx=CD,dy=0) {
@@ -224,8 +237,8 @@ module EFlink() {
        translate([EF/2,0,0]) cube([EF-6,2.6,2.6],center=true);
      }
 
-     translate([EF,0,0]) cylinder(r=.7,h=3,center=true);
-                         cylinder(r=.7,h=3,center=true);
+     #translate([EF,0,0]) cylinder(r=.4,h=3,center=true);
+     #                    cylinder(r=.4,h=5,center=true);
   }
 }
 
@@ -250,6 +263,37 @@ echo("EF",ex,ey,fx,fy);
 
 // this link drawn with B axle at origin, always.
 module BHlinks() {
+  difference() {
+    translate([0,0,2.4]) cylinder(r=1.4,h=13.5,$fn=36,center=true);
+    translate([0,0,2.4]) cube([4,4,7.9],center=true);
+  }
+
+  for(z=[-2.4,7.2]) {
+     hull() {
+       translate([BH-3,0,z]) sphere(.8);
+       translate([   0,0,z]) sphere(.8);
+     }
+  }
+
+  hull() {
+    translate([   4,0.5,-2.4]) sphere(.8);
+    translate([BH-5,1, 6  ]) sphere(.8);    
+  }
+  hull() {
+    translate([   4,-.5, 7]) sphere(.8);
+    translate([BH-5, -1, -2  ]) sphere(.8);    
+  }
+
+  for(z=[-1.7,6.2]) translate([BH,0,z]) difference() {
+     hull() {
+       cylinder(r=3,h=.33,$fn=36);
+       translate([-8,0,0]) cylinder(r=1,h=.33);
+     }
+     cylinder(r=.7,h=2,center=true);
+  }
+
+}
+module BHlinks1() {
   translate([0,0, 6.8])                 BHlink();
   translate([0,0,-2  ]) mirror([0,0,1]) BHlink();
 }
