@@ -16,6 +16,8 @@ FGperp = sqrt(FH*FH - FGleft*FGleft);
 echo(str("DEleft=",DEleft,"   DEperp=",DEperp));
 echo(str("FGleft=",FGleft,"   FGperp=",FGperp));
 
+r38 = (3/8)*2.54/2;  // radius of 3/8" bolt
+
 a=360*$t;
 legAssembly(a,0);
 mirror([1,0,0]) legAssembly(180-a,1.2);
@@ -183,8 +185,8 @@ module foot() difference() {
 }
 $fn=12;
 
-module hip() {
-  //color("Black") cube([3,3,2.5],center=true);
+module hip() difference() {
+  /*  old style, with forks ground from square tube : 
   difference() {
     translate([DE/2,0,0]) cube([DE+3,2.6,2.6],center=true);
     cylinder(r=.5,h=6,center=true);
@@ -195,17 +197,37 @@ module hip() {
       cube([5,3,2],center=true);
     }
   }
-  translate([DE-DEleft,-DEperp,-1.2]) cylinder(r=1.4,h=7.2,$fn=36);
-  hull() {
-    translate([DE-DEleft,-DEperp,0]) sphere(.8);
-    translate([8,0,0]) sphere(.8);
+  */
+  union() {
+    translate([DE/2,0,0]) cube([DE-5,2.5,2.5],center=true); // top tube
+    translate([DE-DEleft,-DEperp,-1.2]) cylinder(r=1.4,h=7.2,$fn=36); // axle
+
+    // top tube fork plates
+    translate([DE,0,0]) mirror([1,0,0]) eFork();
+                                        eFork();
+
+
+    hull() {  // diag tubes
+      translate([DE-DEleft,-DEperp,0]) sphere(.8);
+      translate([8,0,0]) sphere(.8);
+    }
+    hull() {
+      translate([DE-DEleft,-DEperp,0]) sphere(.8);
+      translate([DE-8,0,0]) sphere(.8);
+    }
+
+    // extra bracing
+    translate([DE/2,-20,0]) rotate([0,90,0]) cylinder(r=.8,h=20,center=true);
+    translate([DE-DEleft,-DEperp,4]) rotate([-105,0,0]) cylinder(r=.8,h=14);
   }
-  hull() {
-    translate([DE-DEleft,-DEperp,0]) sphere(.8);
-    translate([DE-8,0,0]) sphere(.8);
-  }
-  translate([DE/2,-20,0]) rotate([0,90,0]) cylinder(r=.8,h=20,center=true);
-  translate([DE-DEleft,-DEperp,4]) rotate([-105,0,0]) cylinder(r=.8,h=14);
+
+  // pivot holes
+  for (x=[0,DE]) translate([x,0,0]) cylinder(r=r38,h=11,center=true);
+}
+
+module eFork() for(z=[-1,1]) hull() {
+  translate([0,0,1.4*z]) cylinder(r=2,h=.3,$fn=24,center=true);
+  translate([6,0,1.4*z]) cube([1,2,.3],center=true);
 }
 
 module crankLink(dx=CD) {
@@ -227,19 +249,18 @@ echo("CD",cx,cy,dx,dy);
   }
 }
 
-module EFlink() {
-  difference() {
-     union() {
-       color([.3,.3,.4,.9]) {
-         translate([   2,0,0]) cube([7,3,2],center=true);
-         translate([EF-2,0,0]) cube([7,3,2],center=true);
-       }
-       translate([EF/2,0,0]) cube([EF-6,2.6,2.6],center=true);
-     }
 
-     #translate([EF,0,0]) cylinder(r=.4,h=3,center=true);
-     #                    cylinder(r=.4,h=5,center=true);
+module EFlink() difference() {
+  union() {
+    color([.4,.4,.5,.9]) {
+      translate([   1.5,0,0]) cube([6,3,2.5],center=true);
+      translate([EF-1.5,0,0]) cube([6,3,2.5],center=true);
+    }
+    translate([EF/2,0,0]) cube([EF-4,2.6,2.6],center=true);
   }
+
+  translate([EF,0,0]) cylinder(r=r38,h=3,center=true);
+                      cylinder(r=r38,h=5,center=true);
 }
 
 module EFlink1(ex=0,ey=0,fx=EF,fy=0) {
