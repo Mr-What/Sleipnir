@@ -151,35 +151,95 @@ checkLink(xF,yF,xH,yH,FH);
 module foot() difference() {
   union() {
     hull() {  // FG
-      cube([4,2.6,2.6],center=true);
+      translate([4,0,0]) cube([4,2.6,2.6],center=true);
       translate([FG-1.3,0,0]) cylinder(r=1.3,h=2.6,$fn=24,center=true);
     }
-    for (z=[-1,1]) hull() {
-      translate([-5,2,1.5*z])scale([3,5,1])cylinder(r=1,h=.4,$fn=64,center=true);
-      translate([ 8,0,1.5*z])cylinder(r=.3,h=.4,center=true);
+
+    // knee braces/fork
+    for (z=[-1.05,4.45]) rotate([0,0,(z>0)?25:0]) hull() {
+      // This was elongated as a brace for knee
+      //translate([-5,2,1.5*z])scale([3,5,1])cylinder(r=1,h=.4,$fn=64,center=true);
+      // wider knee shouldn't need brace
+      translate([0,0,1.5*z]) cylinder(r=2.5,h=.4,$fn=24,center=true);
+      translate([9,0,1.5*z])cylinder(r=1,h=.4,center=true);
     }
-    translate([FGleft,FGperp-5,0]) cube([2.6,6,2.6],center=true);
-    translate([FGleft,FGperp-5,4.8]) cube([2.6,6,2.6],center=true);
-    translate([FGleft,FGperp-5,2.5]) cube([2.6,2.6,7],center=true);
-    color([.3,.3,.4,.8]) {
+
+
+    // hinge holders at H
+    for (z=[-.2,5.1]) translate([FGleft,FGperp,z]) rotate([0,0,0]) {
+       translate([0,-6.5,0]) cube([2.6,6,2.6],center=true);
+       color([.3,.3,.4,.6])
+          translate([0,-1.5,0]) cube([2.4,6,2.4],center=true);
+    }
+
+    translate([FGleft,FGperp-6,2.5]) cube([8,2.6,2.6],center=true);
+
+/*
+    // hinge holders at H on GH segment
+    *for (z=[-.2,5.1]) translate([FGleft,FGperp,z]) rotate([0,0,52]) {
+       translate([0,-6.5,0]) cube([2.6,6,2.6],center=true);
+       color([.3,.3,.4,.6]) translate([0,-1.5,0]) cube([2.4,6,2.4],center=true);
+    }
+
+    // H side of FH link blocks.  No hinge attachment at this time
+    *for (z=[0,-5]) translate([FGleft,FGperp,3.5]) rotate([0,0,-130])
+        translate([3,-2.54/2,z]) cube([6,2.6,2.6]);
+
+    translate([FGleft,FGperp-4,2.5]) cube([15,2.6,2.6],center=true);
+    color([.3,.3,.4,.4]) {
       translate([FGleft,FGperp-.5, 0 ]) cube([3.5,5,2.2],center=true);
       translate([FGleft,FGperp-.5,4.8]) cube([3.5,5,2.2],center=true);
     }
+*/
+
+    // vertical brace extension at knee
+    translate([3.5,0,3.9]) cube([2.6,2.6,5.1],center=true);
+    hull() {  // gusset
+      translate([ 4,-1,1]) cylinder(r=.3,h=5.4,$fn=12);
+      translate([18, 1,0]) cylinder(r=.3,h=1  ,$fn=12);
+    }
+
+    // FH segment bracing
+    for (z=[-.3,5.8]) hull() {
+      translate([3,1,z])             sphere(.8);
+      translate([FGleft-1,FGperp-5,z]) sphere(.8);
+    }
+    hull() {  // diga brace.  Could be gusset?
+      translate([3,1,5.7]) sphere(.8);
+      translate([13,10.5,-.3]) sphere(.8);
+    }
+
+    // GH braces
     hull() {
-      translate([6,0,0]) sphere(.8);
-      translate([FGleft,FGperp-5,0]) sphere(.8);
+      translate([FG-8,0,-.3]) sphere(.8);
+      translate([FGleft+1,FGperp-5,-.3]) sphere(.8);
     }
     hull() {
-      translate([FG-6,0,0]) sphere(.8);
-      translate([FGleft,FGperp-6,0]) sphere(.8);
+      translate([FG-10,0,0]) sphere(.8);
+      translate([FGleft+1,FGperp-5,5.8]) sphere(.8);
     }
-    hull() {
-      translate([FGleft,FGperp-5,5]) sphere(.8);
+
+    hull() {    // perp brace
+      translate([FGleft,FGperp-9,5.7]) sphere(.8);
       translate([FGleft,0,0]) sphere(.8);
+    }
+    hull() {    // perp brace
+      translate([FGleft,FGperp-9,-.3]) sphere(.8);
+      translate([FGleft,0,-.3]) sphere(.8);
+    }
+
+    // extra truss braces
+    hull() {
+      translate([48,13,2]) sphere(.8);
+      translate([35, 0,0]) sphere(.8);
+    }
+    *hull() {
+      translate([5,1,5.8]) sphere(.8);
+      translate([40,0,.8]) sphere(.8);
     }
   }
 
-  cylinder(r=.3,h=4,center=true);
+  cylinder(r=.3,h=20,center=true);
   cube([4.4,3,2],center=true);
   translate([FGleft,FGperp,0]) cylinder(r=.7,h=33,center=true);
 }
@@ -251,6 +311,27 @@ echo("CD",cx,cy,dx,dy);
 
 
 module EFlink() difference() {
+  union() {
+    color([.4,.4,.5,.9]) {
+      //translate([   1.5,0,0]) cube([6,3,2.5],center=true);
+      translate([EF-1.5,0,0]) cube([6,3,2.5],center=true);
+    }
+    translate([EF/2-1.5,0,0]) cube([EF-2,2.6,2.6],center=true);
+
+    translate([0,0,2*2.54/2]) cylinder(r=1.5,h=2.54*3,$fn=48,center=true);
+
+    hull() {
+      translate([0,0,2*2.54/2]) cylinder(r=.2,h=2.54*3,$fn=12,center=true);
+      translate([9,1,   0    ]) cylinder(r=.2,h=1,$fn=12); 
+    }
+  }
+
+  translate([EF,0,0]) cylinder(r=r38,h=5,center=true);
+                    //cylinder(r=r38,h=55,center=true);
+  cylinder(r=1.2,h=22,$fn=36,center=true);
+}
+
+module EFlink2() difference() {
   union() {
     color([.4,.4,.5,.9]) {
       translate([   1.5,0,0]) cube([6,3,2.5],center=true);
