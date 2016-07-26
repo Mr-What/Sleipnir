@@ -193,42 +193,42 @@ module foot() {
 
   // FH segment bracing
   for (z=[-.3,5.1]) hull() {
-    translate([   3    ,   1    ,z]) sphere(.8);
-    translate([FGleft-1,FGperp-1,z]) sphere(.8);
+    translate([   3    ,   1    ,z]) barEnd1();
+    translate([FGleft-1,FGperp-1,z]) barEnd1();
   }
   hull() {  // dig brace.  Could be gusset?
-      translate([3,1,5.7]) sphere(.8);
-      translate([12,11,-.3]) sphere(.8);
+      translate([3,1,5.7]) barEnd1();
+      translate([12,11,-.3]) barEnd1();
   }
   translate([FGleft-2,FGperp-2,.3]) cylinder(r=.8,h=5,$fn=11);
   hull() {
-      translate([FGleft-7.2,FGperp-8,5.3]) sphere(.8);
-      translate([14,13.5,-.3]) sphere(.8);
+      translate([FGleft-7.2,FGperp-8,5.3]) barEnd1();
+      translate([14,13.5,-.3]) barEnd1();
   }
 
   // GH braces
   hull() {
-      translate([FG-8,0,-.3]) sphere(.8);
-      translate([FGleft+1,FGperp-1,-.3]) sphere(.8);
+      translate([FG-8,0,-.3]) barEnd1();
+      translate([FGleft+1,FGperp-1,-.3]) barEnd1();
   }
   hull() {
-      translate([FG-10,0,0]) sphere(.8);
-      translate([FGleft+1,FGperp-1,5.2]) sphere(.8);
+      translate([FG-10,0,0]) barEnd1();
+      translate([FGleft+1,FGperp-1,5.2]) barEnd1();
   }
 
   hull() {    // perp brace
-      translate([FGleft,FGperp-1,5.2]) sphere(.8);
-      translate([FGleft,0,0]) sphere(.8);
+      translate([FGleft,FGperp-1,5.2]) barEnd1();
+      translate([FGleft,0,0]) barEnd1();
   }
   hull() {    // perp brace
-      translate([FGleft,FGperp-1,-.3]) sphere(.8);
-      translate([FGleft,0,-.3]) sphere(.8);
+      translate([FGleft,FGperp-1,-.3]) barEnd1();
+      translate([FGleft,0,-.3]) barEnd1();
   }
 
   // extra truss braces
   hull() {
-      translate([46,15,3]) sphere(.8);
-      translate([35, 0,0]) sphere(.8);
+      translate([46,15,3]) barEnd1();
+      translate([35, 0,0]) barEnd1();
   }
   translate([FGleft+2,FGperp-2,.3]) cylinder(r=.6,h=5);
   translate([FGleft,FGperp-2,.3]) cylinder(r=.6,h=5);
@@ -248,12 +248,12 @@ module hip() {
 
 
   hull() {  // diag tubes
-    translate([DE-DEleft,-DEperp,0]) sphere(.8);
-    translate([8,0,0]) sphere(.8);
+    translate([DE-DEleft,-DEperp,0]) barEnd1();
+    translate([8,0,0]) barEnd1();
   }
   hull() {
-    translate([DE-DEleft,-DEperp,0]) sphere(.8);
-    translate([DE-8,0,0]) sphere(.8);
+    translate([DE-DEleft,-DEperp,0]) barEnd1();
+    translate([DE-8,0,0]) barEnd1();
   }
 
   // extra bracing
@@ -319,26 +319,32 @@ module BHlinks() {
     cylinder(r=2.54*1.5/2-.3,h=22,$fn=19,center=true);
   }
 
-  // brace near axle
-  translate([3,0,2.2]) cylinder(r=.8,h=10,$fn=19,center=true);
-  // fork brace 
-  translate([BH-7,0,2.43]) cube([2.5,2.5,7.6],center=true);
-
-  for(z=[-2.4,7.2]) {
+  for(z=[-2.4,7.2]) {  // main side rails
      hull() {
-       translate([BH-6,0,z]) sphere(.8);
-       translate([   0,0,z]) sphere(.8);
+       translate([BH-6,0,z]) barEnd1();
+       translate([   0,0,z]) barEnd1();
      }
   }
 
+  // brace near axle
+  translate([3,0,2.2]) cylinder(r=.8,h=10,$fn=19,center=true);
+
+/* get rid of fork brace.  Comes close to hitting CH cranklink.
+   let cross members hold forks apart
+  //    fork brace 
+  translate([BH-7,0,2.43]) cube([2.5,2.5,7.6],center=true);
+
   hull() {
-    translate([   4,.7,-1.6]) sphere(.8);
-    translate([BH-9,.7, 6.2]) sphere(.8);    
+    translate([   4,.7,-1.6]) barEnd1();
+    translate([BH-9,.7, 6.2]) barEnd1();    
   }
   hull() {
-    translate([   4,-.7, 6.2]) sphere(.8);
-    translate([BH-9,-.7,-1.6]) sphere(.8);    
+    translate([   4,-.7, 6.2]) barEnd1();
+    translate([BH-9,-.7,-1.6]) barEnd1();    
   }
+*/
+
+  BHcrosses();
 
   // H forks
   for(z=[-1.7,6.2]) translate([BH,0,z]) difference() {
@@ -352,6 +358,34 @@ module BHlinks() {
   // to check dimensions
   //%translate([BH/2,0,2.4]) cube([BH,1,7.8],center=true);
 }
+module barEnd1() sphere(.8,$fn=12);
+// diag braces.  Try to leave fork area open to allow clearance for CH link
+module BHcrosses() {
+h1=BH-4;  // node closest to H
+h2=h1-20;
+b2=h2-2;
+b1=4;
+spread=.7;
+lo=-1.6;
+hi=6.5;
+rBar=.8;
+  hull() {
+    translate([h2, spread,lo]) barEnd1();
+    translate([h1, spread,hi]) barEnd1();    
+  }
+  hull() {
+    translate([h2,-spread,hi]) barEnd1();
+    translate([h1,-spread,lo]) barEnd1();    
+  }
+  hull() {
+    translate([b1,-spread,hi]) barEnd1();
+    translate([b2,-spread,lo]) barEnd1();    
+  }
+  hull() {
+    translate([b2,spread,hi]) barEnd1();
+    translate([b1,spread,lo]) barEnd1();    
+  }
+}
 module BHlinks1() {
   translate([0,0, 6.8])                 BHlink();
   translate([0,0,-2  ]) mirror([0,0,1]) BHlink();
@@ -361,12 +395,12 @@ module BHlink() {
 
   //%translate([BH/2-1,0,1.3]) cube([BH-2,2.5,2.5],center=true);
   for (q=[-1,1]) hull() {
-    translate([  0 ,1.5*q,1]) sphere(0.8);
-    translate([BH-3,1  *q,1]) sphere(0.8);
+    translate([  0 ,1.5*q,1]) barEnd1();
+    translate([BH-3,1  *q,1]) barEnd1();
   }
   hull() {
-    translate([  0 ,0,5]) sphere(0.8);
-    translate([BH-3,0,1]) sphere(0.8);
+    translate([  0 ,0,5]) barEnd1();
+    translate([BH-3,0,1]) barEnd1();
   }
 
   translate([BH,0,-.3]) difference() {
