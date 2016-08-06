@@ -14,7 +14,7 @@ thinWall=.35;//0.41;  // width of thinnest wall which will not get culled by sli
 //%translate([0,0,-31.5]) rotate([180,0,0]) lowerPlatform();
 
 braceSep = PCBholeInset+PCBholeSep/2;
-*for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
+for(a=[0,180]) rotate([0,0,a]) translate([0,braceSep,0]) rotate([90,0,0])
       payloadBrace();
 
 translate([0,0,9]) lid();
@@ -103,32 +103,20 @@ module lid() {
   difference() {
     union() {
       for (i=[-1,1]) {
-        for (j=[-1,1]) translate([2*dx*i,5*dy*j,0]) {
-           hull() {
-             translate([0,  0 ,1.7]) cylinder(r=2.2,h=1.4,$fn=6);
-             translate([0,1.5*j,3]) cylinder(r=.1 ,h=5,$fn=6); }
-                              hex(0,0,[.9,.9,1]); }
-        hull() {                hex(5*dx*i,  0   ,[.9,.9,1]);
-           translate([(5*dx-0.6)*i,0,8]) sphere(0.1); }
+        for (j=[-1,1]) translate([2*dx*i,5*dy*j,0]) hull() {
+           translate([0,1.2*j,3]) cylinder(r=.1 ,h=5,$fn=6); 
+                  hex(   0    ,   0    ,[.9,.9,1]); }
+        hull() {  hex(4.5*dx*i,0.5*dy*i,[.9,.9,1]);
+           translate([(4.5*dx+1.3)*i,0.5*dy*i,8]) sphere(0.1); }
       }
       difference() {
         lidShell();
-        translate([0,0,0.3]) scale([.982,.976,.97]) lidShell();
+        translate([0,0,0.3]) scale([.985,.976,.97]) lidShell();
 
         //trim off thin edges of shell
-        translate([0,0,2.4]) cube([89,53,2],center=true);
+        translate([0,0,2.4]) cube([84,53,2],center=true);
       }
     }
-
-    // trim off severe overhanging parts of tabs
-    *hull() {
-       translate([0,0,3.5]) cube([70,55,.1],center=true);
-       cube([70,50,7],center=true);
-    }
-
-    // trim off part of tab in partial hex hole
-    for(x=[-1,1]) translate([49.7*x,0,0]) rotate([0,10*x,0])
-       cube([6,6,20],center=true);
 
     // pass through for cable ties to attach platform to sides
     for(x=[-1,1]) translate([x*28,0,2.7]) rotate([90,0,0])
@@ -142,8 +130,8 @@ module lid() {
 module lidShell()
   hull() {
     for (x=[-1,1]) for(y=[-1,1]) {
-      translate([44*x,26*y,4.6]) sphere(3,$fn=24);
-      translate([40*x,23  *y,30 ]) sphere(3,$fn=24);
+      translate([41.5*x,26*y,4.6]) sphere(3,$fn=24);
+      translate([  31*x,20*y,30 ]) sphere(3,$fn=24);
     }
 }
 
