@@ -6,7 +6,7 @@
 // Distance from B-axis centerline to center of motor axle:
 // at 30+8mm offset, belts were not as tight as I'd like.
 // ?? try 45?
-motorOffset=45;
+motorOffset=40;
 topOffset=5;  // top of mount is this far from B axis center
 
 // shape of small gearhead motor GA12YN20 from fasttech.com
@@ -76,7 +76,7 @@ module motorMount() {
                [x*5 ,-motorOffset-3, 1],1.5,8,fn=17);
 
          blade([x*18,-topOffset  -3,.4],1,3,
-               [-x*8.5,-motorOffset+6,.8],1,7,fn=17);
+               [-x*9,-motorOffset+5.5,.8],1,7,fn=17);
       }
 
       hull() for (a=[-1,1]) {

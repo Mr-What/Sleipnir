@@ -18,6 +18,11 @@ module sphereSection(r,h,ar=1.5,off=-.3,fn=48) translate([0,0,h/2]) intersection
   translate([0,0,off*h]) scale([1,1,ar]) sphere(r,$fn=fn);
 }
 
+module blade(p0,r0,h0,p1,r1,h1,fn=32) hull() {
+  translate(p0) scale([r0,r0,h0]) sphere(1,$fn=fn);
+  translate(p1) scale([r1,r1,h1]) sphere(1,$fn=fn);
+}
+
 module linkNode(r,h,ar=1.5,off=-.3,fn=64,dx=20,dy=0,dz=0.3) hull() {
   sphereSection(r,h,ar,off,fn);
   translate([dx,dy,dz]) sphere(0.2);
