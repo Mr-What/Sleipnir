@@ -38,17 +38,11 @@ difference() {
        linkNode(r1,h1,ar1,sr1,dx=-3*r1);
        linkNode(r0,h0,ar0,sr0,dx= 3*r0);
 
-    // bar bottom
-    hull() for(x=[0,len]) translate([x,0,0]) sphereSection(3.5,2.5,0.6,-.3);
+    blade([len,0,0.4],3.4,2,    // bar bottom
+          [ 0 ,0,0.4],3.4,2);
 
-    // vertical brace blade
-    //%hull() {                   cylinder(h=h0-0.5,r1=2,r2=.6,$fn=6);
-    //  translate([len-d1,0,0]) cylinder(h=h1-0.5,r1=2,r2=.6,$fn=6); }
-    hull() {
-      translate([len-r1,0,2]) scale([1,1,h1-2.5]) sphere(1,$fn=24);
-      translate([    r0,0,2]) scale([1,1,h0-2.5]) sphere(1,$fn=24);
-    }
-
+    blade([len-r1,0,2],1,h1-2.5,   // vertical brace blade
+          [    r0,0,2],1,h0-2.5,fn=17);
   }
   drillHole(d0);
   translate([len,0,0]) drillHole(d1);
@@ -56,84 +50,24 @@ difference() {
   translate([-10,-10,-10]) cube([20+len,20,10]);
 }}
 
-/*
-
-module linkage0(len,h0,r0,d0,h1,r1,d1) difference() {
-echo(str("linkage0:",len,",",h0,",",r0,",",d0,",",h1,",",r1,",",d1));
-  union() {
-   hull() { barAnchor(2.5*r0);
-      cylinder(h=h0,r1=r0+.1,r2=r0-0.2,$fn=48); }
-   translate([len,0,0]) { hull() { barAnchor(-2.5*r1);
-      cylinder(h=h1,r1=r1+.1,r2=r1-.2,$fn=48); }}
-   hull() {                cylinder(h=BarHeight,r1=LinkRad+.2,r2=LinkRad-.2,$fn=6);
-      translate([len,0,0]) cylinder(h=BarHeight,r1=LinkRad+.2,r2=LinkRad-.2,$fn=6); }
-   hull() {                   cylinder(h=h0-0.5,r1=2,r2=.6,$fn=6);
-      translate([len-d1,0,0]) cylinder(h=h1-0.5,r1=2,r2=.6,$fn=6); }
-   }
-   drillHole(d0);
-   translate([len,0,0]) drillHole(d1);
-}
-
-module monoBracedLinkage1(len) {
-lro = Drad+1.8;  // outisde link radius
-difference() { union() { //------------------------ EF
-    difference() { hull() {  // main bar
-      translate([ 0 ,0,0])   nodeCyl(BarHeight,Frad);
-      translate([len,0,0])   nodeCyl(BarHeight,lro*.5);
-      }
-      hull() { translate([0,0,-1.5]) { nodeCyl(BarHeight,Frad-1.5);
-               translate([len,0 ,0])   nodeCyl(BarHeight,1); }}
-    }
-
-    // non-braced (BED side) reinforcement 
-    translate(  [len,0,0]) { nodeCyl(BarHeight,lro);
-       hull() { translate([0,0,BarHeight-1])
-          cylinder(h=ForkHeight-BarHeight+1,r1=lro-.8,r2=rad4+1.2,$fn=64);
-          cylinder(h=NodeHeight-1,r1=lro+.1,r2=rad4+1.2,$fn=16);
-          //barAnchor(-1.5*lro);
-          translate([-2*lro,0,2]) sphere(r=.4,$fn=12);
-       }
-    }
-    hull() { translate([1.3*Frad,0,1.5]) scale([1,1,1]) sphere(r=1,$fn=16);
-        translate([0,0,BarHeight-1])
-          cylinder(h=ForkHeight-BarHeight+1,r1=Frad-.6,r2=rad4+1.6,$fn=64); }
-    cylinder(h=BarHeight-1,r1=rad4+2.2,r2=rad4+3.3,$fn=32);
-
-    hull() { // out-of-plane ridge/brace
-        translate([ 0 ,0,2.2]) scale([1,1,2]) sphere(r=1,$fn=16);
-        translate([len,0,2.2]) scale([1,1,2]) sphere(r=1,$fn=16); }
-    }
-    drillHole(rad4);
-    translate([len,0,0]) drillHole(rad4);
-}}
-
-*/
-
-module monoBracedLinkage(len) {
-lro = Drad+2;  // outisde link radius
-difference() {
+module monoBracedLinkage(len) difference() {
   union() { //------------------------ EF
-    hull() {  // main bar
-      translate([ 0 ,0,0.3]) scale([Frad+.3,Frad+.3,1.8]) sphere(1,$fn=48);
-      translate([len,0,0.3]) scale([  2    ,rad4+1 ,1.8]) sphere(1,$fn=36);
-    }
+    blade([ 0 ,0,0.3],Frad+.3, 2 ,
+          [len,0,0.3], 2.5   ,1.6,fn=64);
 
     // non-braced (BED side) reinforcement 
-    translate([len,0,0]) linkNode(Drad+1,4,ar=1.6,dx=-3*lro);
+    translate([len,0,0]) linkNode(Drad+1,4,ar=1.6,dx=-5*Drad);
 
     linkNode(5,4,ar=.7,off=-.2,dx=2*Frad,dz=2);
 
     // out-of-plane ridge/brace
-    hull() {
-      translate([2    ,0,1  ]) scale([1,1,3]) sphere(r=1,$fn=16);
-      translate([len-3,0,0.5]) scale([1,1,3]) sphere(r=1,$fn=16);
-    }
-
+    blade([2    ,0,1  ],1,3,
+          [len-3,0,0.5],1,3,fn=16);
   }
 
   for(x=[0,len]) translate([x,0,0]) drillHole(rad4);
   translate([-20,-20,-20]) cube([len+40,40,20]);
-}}
+}
 
 module linkage2(len,h0,r0,d0,h1,r1,d1) { difference() { union() {
    hull() { barAnchor(1.5*r0);
@@ -156,15 +90,11 @@ echo("linkage1",len,h0,r0,d0,h1,r1,d1);
       linkNode(r1,h1,0.6,-.2,dx= -4*r1);
       linkNode(r0,h0,2.6,-.2,dx=2.5*r0);
 
-    hull() {
-      translate([ 0 ,0,.4]) scale([3,r0-.2,2]) sphere(1,$fn=36);
-      translate([len,0,.4]) scale([2,d1+1 ,2]) sphere(1,$fn=36);
-    }
-
-    hull() {
-      translate([    d0  ,0,2]) scale([1,1,h0-2]) sphere(1,$fn=24);
-      translate([len-r1+1,0,0]) scale([.5,.5,BarHeight-.3]) sphere(1);
-    }
+    blade([ 0 ,0,.4], r0-.2,2.4,
+          [len,0,.4],d1+1.5,1.8  );
+    
+    blade([    d0,0,2],1 ,h0-2,
+          [len-r1,0,0],1,BarHeight-.5,fn=17);
   }
 
   drillHole(d0);
@@ -199,21 +129,19 @@ difference() {
 
 */
 
-module brace(len,h0,r0) {
-r1=r0+1.7;
-difference() {
+module brace(len,h0,r0) difference() {
   union() {
-    hull() for(x=[-1,1]) translate([x*len/2,0,0.8])
-       scale([1,r0+2,1.8]) sphere(1,$fn=24);
+    blade([ len/2,0,.6],r0+2,1.8,
+          [-len/2,0,.6],r0+2,1.8);
 
     for(x=[-1,1]) translate([x*len/2,0,0])
        linkNode(r0+2,h0,ar=0.7*h0/r0,dx=-x*h0*1.5);
 
-     hull() for(x=[-1,1]) translate([x*len/2,0,0])
-        scale([1,1.6,h0-.3]) sphere(1,$fn=24);
+     blade([ len/2,0,0],1.6,h0-.3,
+           [-len/2,0,0],1.6,h0-.3);
    }
 
    for(x=[-1,1]) translate([x*len/2,0,0]) drillHole(r0);
 
    translate([0,0,-5]) cube([len+20,20,10],center=true);
-}}
+}
