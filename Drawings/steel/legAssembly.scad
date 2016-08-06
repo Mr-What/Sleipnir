@@ -236,31 +236,49 @@ module foot() {
 
 $fn=12;
 module hip() {
-  translate([DE/2,0,-.2]) cube([DE-5,2.5,2.5],center=true); // top tube
+  translate([DE/2,0,-.2]) rotate([0,90,0])      // top tube
+    cylinder(r=.9,h=DE-4,$fn=17,center=true);
+
   translate([DE-DEleft,-DEperp,-1.2]) difference() {
-     cylinder(r=2.54*1.5/2,h=7.2,$fn=36); // axle
+     cylinder(r=2.54*1.5/2,h=7.2,$fn=36);                // axle
      cylinder(r=2.54*1.5/2-.3,h=22,$fn=18,center=true);
   }
 
-  // top tube fork plates
-  translate([DE,0,0]) mirror([1,0,0]) eFork();
-                                      eFork();
-
+  // use cut-out square tube (or channel) for forks, instead of all welded.
+  // easier to drill and maintain aligned holes
+  // 14ga roughly 2mm thick
+  translate([DE,0,0]) rotate([0,0,180]) channelFork();
+  channelFork();
 
   hull() {  // diag tubes
     translate([DE-DEleft,-DEperp,0]) barEnd1();
-    translate([8,0,0]) barEnd1();
+    translate([2,0,0]) barEnd1();
   }
   hull() {
     translate([DE-DEleft,-DEperp,0]) barEnd1();
-    translate([DE-8,0,0]) barEnd1();
+    translate([DE-2,0,0]) barEnd1();
   }
 
   // extra bracing
-  translate([DE/2,-20,0]) rotate([0,90,0]) cylinder(r=.8,h=20,center=true);
-  translate([DE-DEleft,-DEperp,5]) rotate([-110,0,0]) cylinder(r=.8,h=14.4);
+  translate([DE/2,-15,0]) rotate([0,90,0]) cylinder(r=.8,h=35,center=true);
+  translate([DE-DEleft,-DEperp,5]) rotate([-105,0,0]) cylinder(r=.8,h=20);
 }
 
+// cut-out square tube (or channel) for forks
+//     easier to drill and maintain aligned holes
+module channelFork(od=2.54*1.24,gu=.2,len=3,hd=.82,co=.5)
+translate([co,0,0]) difference() { 
+  cube([od     ,len  ,od     ],center=true);
+  cube([od-2*gu,len+1,od-2*gu],center=true);
+
+  // open one side of square tube to make a channel
+  translate([-od/2,0,0]) cube([2.1*gu,len+1,od-2*gu-.05],center=true);
+
+  // put hole at x=0,y=0 in part space.
+  translate([-co,0,0]) cylinder(r=hd/2,h=od+1,$fn=17,center=true);
+}
+
+/*
 module eFork() for(z=[-1,1]) difference() { 
   hull() {
     translate([0,0,1.4*z]) cylinder(r=2,h=.3,$fn=24,center=true);
@@ -268,6 +286,7 @@ module eFork() for(z=[-1,1]) difference() {
   }
   cylinder(r=.4,h=11,$fn=17,center=true);
 }
+*/
 
 module crankLink(dx=CD) {
   %color([0,0,.6,.4]) difference() {
