@@ -10,6 +10,13 @@ zBar=90;
 
 $fn=8;
 
+// meter stick for scale
+%translate([65,-42,0]) cube([5,100,5],center=true);
+%translate([65,0,0]) difference(){
+  cube([5,5,140],center=true);
+  cube([6,6, 40],center=true);
+}
+
 for (a=[-1,1]) {
   %translate([0,0,(zBar-10)*a]) legProxy();
   %translate([0,0,(zBar+10)*a]) legProxy();
@@ -20,7 +27,7 @@ basket();
 
 module basket() {
   for(a=[-1,1]) {
-    %translate([Bx*a,0,0]) cylinder(r=1,h=120,$fn=16,center=true); // main axle
+    *translate([Bx*a,0,0]) cylinder(r=1,h=120,$fn=16,center=true); // main axle
     for (b=[-1,1]) translate([Bx*b,0,zBar*a]) {
        color([0,0,1,.6]) translate([0,0,-6*a])
        cylinder(r=1.9,h=60,$fn=16,center=true); // axle
@@ -34,32 +41,35 @@ module basket() {
        cube([2.5,2.5,230],center=true); // lower rails
 
        // remove center section for wide platform version
-       cube([3,3,66],center=true);
+       cube([3,3,78.5],center=true);
     }
 
     hull() for (b=[-1,1]) translate([ Bx*b, 0 ,71*a]) sphere(1); // arm guard bar
     //hull() for (b=[-1,1]) translate([loX*b,loY,71*a]) sphere(1); // outer foot bar
     for (b=[-1,1]) {
       hull() { // outer diagonal
-        translate([ Bx*b, 0 ,70*a]) sphere(1);
+        translate([ Bx*b, 0  ,70*a]) sphere(1);
         translate([20*b,loY+2,70*a]) sphere(1);
       }
     }
 
     for(x=[-1,1]) {
        hull() { // inner back trap
-         translate([x*35,loY+4,22*a]) sphere(1);
-         translate([x*Bx,  0  , 5*a]) sphere(1);
+         translate([x*36    ,loY+2,28*a]) sphere(1);
+         translate([x*(Bx+1),  1  , 5*a]) sphere(1);
        }
        hull() { // outer back
-         translate([x*35,loY+2,31*a]) sphere(1);
+         translate([x*36,loY+1,40*a]) sphere(1);
          translate([x*Bx,  0  ,60*a]) sphere(1);
        }
     }
 
     // may do something more complicated for payload bay,
     // but for now, just stich sides together
-    translate([a*(Bx+2),2,0]) cube([3.8,3.8,140],center=true);
+    translate([a*(Bx+1),1,0]) difference() {
+       cube([3.8,3.8,140],center=true);
+       translate([-.5*a,-.5,0]) cube([3.8,3.8,141],center=true);
+    }
 
     translate([34*a,loY+2.7,0]) difference() {
        cube([2.5,2.5,138],center=true);
@@ -70,14 +80,14 @@ module basket() {
        translate([0,.4,.4]) cube([72,3.8 ,3.8],center=true);
     }
     hull() {  // central floor cross
-      translate([ 34*a,loY+1, 32]) sphere(1);
-      translate([-34*a,loY+1,-32]) sphere(1);
+      translate([ 34*a,loY+1, 38]) sphere(1);
+      translate([-34*a,loY+1,-38]) sphere(1);
     }
   }
 
   //for(z=[-1,0,1])
   for(z=[-1,1])
-  translate([0,loY+.4,34*z]) rotate([0,(z==1)?180:0,0]) difference() {
+  translate([0,loY+.4,40*z]) rotate([0,(z==1)?180:0,0]) difference() {
      cube([70,2.5,2.5],center=true);
      translate([0,-.4,-.4]) cube([71,2.5,2.5],center=true);
   }
@@ -130,9 +140,9 @@ module legProxy() scale([1,1,12]) {
 }
 
 // measurements from drawing, center pixel 600,300, 4 pixels/cm
-module legProxy1() {
+module legProxy1() difference() {
 
-  hull() {
+  union() { hull() {
     translate([0,3.32,0]) cylinder(r=17.5+2,h=1,$fn=36,center=true);
     translate([-250/4, 290/4,0]) node();
     translate([-200/4, 290/4,0]) node();
@@ -145,7 +155,10 @@ module legProxy1() {
     translate([-340/4,-370/4+2,0]) node();
     translate([ -90/4,-370/4+2,0]) node();
     translate([-140/4,-120/4  ,0]) node();
-  }
+  }}
+
+  // cut out to show step height
+  translate([-50,-92+5,-1]) cube([3,17.5-5,2]);
 }
 
 module node() cylinder(r=2,h=1,$fn=9,center=true);
