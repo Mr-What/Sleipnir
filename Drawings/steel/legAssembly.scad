@@ -20,7 +20,7 @@ echo(str("FGleft=",FGleft,"   FGperp=",FGperp));
 
 a=360*$t;
 legAssembly(a,0);
-mirror([1,0,0]) legAssembly(180-a,1.4);
+mirror([1,0,0]) legAssembly(180-a,1.3);
 
 //  -------------------------- crank-arm circle reference
 %color([1,.5,.3,.4]) translate([0,Ay,-2]) difference() {
@@ -130,7 +130,7 @@ translate([xC,yC,linkOffset-.6]) rotate([0,0,atan2(yD-yC,xD-xC)])
   mirror([0,0,(linkOffset>0)?1:0]) crankLink(CD);
 checkLink(xC,yC,xD,yD,CD);
 
-translate([xC,yC,linkOffset+2.2]) rotate([0,0,atan2(yH-yC,xH-xC)])
+translate([xC,yC,linkOffset+2]) rotate([0,0,atan2(yH-yC,xH-xC)])
   mirror([0,0,(linkOffset>0)?1:0]) crankLink(CH);
 checkLink(xC,yC,xH,yH,CH);
 
@@ -175,13 +175,13 @@ module foot() {
     cylinder(r=2.54/2,h=7,$fn=36);
 
     cylinder(r=1.9/2,h=22,center=true,$fn=24);
-    translate([0,0,3.9])cube([3,3,2.8],center=true);
+    translate([0,0,3.6])cube([3,3,2.8],center=true);
   }
   translate([FGleft,FGperp,-.87]) {
     rotate([180,0,0]) F698();
-    translate([0,0,5.3]) rotate([180,0,0]) F698();
-    translate([0,0,2.24]) F698();
-    translate([0,0,6.74]) F698();
+    translate([0,0,5.0]) rotate([180,0,0]) F698();
+    translate([0,0,1.95]) F698();
+    translate([0,0,6.75]) F698();
   }
 
   // vertical brace extension at knee
@@ -271,11 +271,11 @@ module eFork() for(z=[-1,1]) difference() {
 
 module crankLink(dx=CD) {
   %color([0,0,.6,.4]) difference() {
-    cylinder(r=2.54/2,h=1,$fn=36,center=true);
+    cylinder(r=2.54/2,h=.9,$fn=36,center=true);
     cylinder(r=2.54/2-.17,h=2,$fn=24,center=true);
   }
-  translate([0,0, .36]) F698(); //cylinder(r=1.4,h=.7,$fn=24,center=true);
-  translate([0,0,-.36]) rotate([180,0,0]) F698();
+  translate([0,0, .31]) F698(); //cylinder(r=1.4,h=.7,$fn=24,center=true);
+  translate([0,0,-.31]) rotate([180,0,0]) F698();
 
   //translate([dx/2-1,0,0]) cube([dx-3,1.3,1.3],center=true);
   %color([0,.8,0,.6])
