@@ -240,8 +240,24 @@ module hip() {
     cylinder(r=.9,h=DE-4,$fn=17,center=true);
 
   translate([DE-DEleft,-DEperp,-1.2]) difference() {
-     cylinder(r=2.54*1.5/2,h=7.2,$fn=36);                // axle
-     cylinder(r=2.54*1.5/2-.3,h=22,$fn=18,center=true);
+     union() {
+       cylinder(r=2.54*1.75/2,h=7.2,$fn=36);                // axle
+
+       hull() {  // diag tubes
+         translate([-1.6,1.4,1.2]) barEnd1();
+         translate([DEleft-DE+2,DEperp,1.2]) barEnd1();
+       }
+       hull() {
+         translate([0,0,1.2]) barEnd1();
+         translate([DE-DEleft-1,DEperp,1.2]) barEnd1();
+       }
+
+       // extra brace
+       translate([0,0,6.2]) rotate([-105,0,0]) cylinder(r=.8,h=20);
+     }
+
+     // bore out for 6805 bearing
+     cylinder(r=3.7/2+.1,h=22,$fn=18,center=true);
   }
 
   // use cut-out square tube (or channel) for forks, instead of all welded.
@@ -250,18 +266,9 @@ module hip() {
   translate([DE,0,0]) rotate([0,0,180]) channelFork();
   channelFork();
 
-  hull() {  // diag tubes
-    translate([DE-DEleft,-DEperp,0]) barEnd1();
-    translate([2,0,0]) barEnd1();
-  }
-  hull() {
-    translate([DE-DEleft,-DEperp,0]) barEnd1();
-    translate([DE-2,0,0]) barEnd1();
-  }
 
   // extra bracing
   translate([DE/2,-15,0]) rotate([0,90,0]) cylinder(r=.8,h=35,center=true);
-  translate([DE-DEleft,-DEperp,5]) rotate([-105,0,0]) cylinder(r=.8,h=20);
 }
 
 // cut-out square tube (or channel) for forks
@@ -333,20 +340,26 @@ module EFlink() {
 // this link drawn with B axle at origin, always.
 module BHlinks() {
   difference() {  // main axle rings
-    translate([0,0,2.4]) cylinder(r=2.54*1.5/2,h=13.5,$fn=36,center=true);
+    union() {
+      // main axle tube
+      translate([0,0,2.4]) cylinder(r=2.54*1.75/2,h=13.5,$fn=36,center=true);
+
+      for(z=[-2.4,7.2]) {  // main side rails
+        hull() {
+          translate([BH-6,0,z]) barEnd1();
+          translate([   0,0,z]) barEnd1();
+        }
+      }
+
+    }
+
     translate([0,0,2.4]) cube([5,5,7.9],center=true);
-    cylinder(r=2.54*1.5/2-.3,h=22,$fn=19,center=true);
+    cylinder(r=3.7/2+.1,h=22,$fn=19,center=true);
   }
 
-  for(z=[-2.4,7.2]) {  // main side rails
-     hull() {
-       translate([BH-6,0,z]) barEnd1();
-       translate([   0,0,z]) barEnd1();
-     }
-  }
 
   // brace near axle
-  translate([3,0,2.2]) cylinder(r=.8,h=10,$fn=19,center=true);
+  translate([3.3,0,2.2]) cylinder(r=.8,h=10,$fn=19,center=true);
 
 /* get rid of fork brace.  Comes close to hitting CH cranklink.
    let cross members hold forks apart
