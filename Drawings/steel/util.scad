@@ -1,7 +1,32 @@
 // Utilities for steel jansen linkage
 
-SA8();
-translate([0,0,11]) F698();
+SI8onBolt();
+//translate([0,0,11]) F698();
+
+module SI8onBolt() {
+  translate([-7,0,0]) rotate([0,90,0])
+    cylinder(r=.8/2,h=5,$fn=17);
+  SI8();
+}
+
+// SI8T/K rod end (female)
+module SI8() scale(.1) difference() {
+  union() {
+    cylinder(r=10/2,h=12,center=true,$fn=24);
+    hull() {
+      cylinder(r=24/2,h=9,center=true,$fn=36);
+      translate([-16,0,0]) rotate([0,90,0]) cylinder(r=4.5,h=1,$fn=16);
+    }
+    translate([-38,0,0]) rotate([0,90,0]) {
+      cylinder(r=12.5/2,h=23,$fn=16);
+      intersection() {
+        translate([0,0,4]) cube([14,16,8],center=true);
+        cylinder(r=16/2,h=7,$fn=19);
+      }
+    }
+  }
+  cylinder(r=8/2,h=22,center=true,$fn=16);
+}
 
 // SA8T/K rod end
 module SA8() scale(.1) difference() {

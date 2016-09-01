@@ -34,6 +34,8 @@ for(x=[-1,1]) translate([x*Bx,0,0]) difference() {
 }
 
 %translate([0,-93,0]) cube([200,2,2],center=true); // ground
+%color([0,0,1,.2]) translate([0,0,-8])
+   cube([114,1.75*2.54,1.75*2.54],center=true);
 
 // -----------------------------------------------------------------
 
@@ -151,6 +153,7 @@ use <util.scad>
 // -----------------------------------------------------------------
 
 module foot() {
+useF698=0;
   hull() {  // FG
     translate([4,0,.2]) cube([4,2.5,2.5],center=true);
     translate([FG-1.3,0,.2]) cylinder(r=1.3,h=2.6,$fn=24,center=true);
@@ -170,22 +173,31 @@ module foot() {
 
 
   // hinge holders at H
-  %color([0,0,.6,.4])
-  translate([FGleft,FGperp,-1]) difference() {
-    cylinder(r=2.54/2,h=7,$fn=36);
+  if (useF698) {
+    // F698 tubes for H-hinge fork
+    %color([0,0,.6,.4])
+    translate([FGleft,FGperp,-1]) difference() {
+      cylinder(r=2.54/2,h=7,$fn=36);
 
-    cylinder(r=1.9/2,h=22,center=true,$fn=24);
-    translate([0,0,3.6])cube([3,3,2.8],center=true);
-  }
-  translate([FGleft,FGperp,-.87]) {
-    rotate([180,0,0]) F698();
-    translate([0,0,5.0]) rotate([180,0,0]) F698();
-    translate([0,0,1.95]) F698();
-    translate([0,0,6.75]) F698();
+      cylinder(r=1.9/2,h=22,center=true,$fn=24);
+      translate([0,0,3.6])cube([3,3,2.8],center=true);
+    }
+    translate([FGleft,FGperp,-.87]) {
+      rotate([180,0,0]) F698();
+      translate([0,0,5.0]) rotate([180,0,0]) F698();
+      translate([0,0,1.95]) F698();
+      translate([0,0,6.75]) F698();
+    }
+  } else {
+    // use SA8 Heim rod-ends for H fork
+    // use some washers/spacers to get heim a few mm inside fork, to allow
+    // room for connecting rod to clear fork
+    for (z=[-.7+.3,5.6-.3]) translate([FGleft,FGperp,z])
+      rotate([0,0,142]) SI8onBolt(); //SA8();
   }
 
   // vertical brace extension at knee
-  translate([3.5,0,4.1]) cube([2.6,2.6,5.3],center=true);
+  translate([3.5,0,4.1]) cube([2.5,2.5,5.3],center=true);
   hull() {  // gusset
     translate([ 5.5,-1,1]) cylinder(r=.2,h=5.8,$fn=8);
     translate([18, 1,0]) cylinder(r=.3,h=1  ,$fn=8);
@@ -194,34 +206,37 @@ module foot() {
   // FH segment bracing
   for (z=[-.3,5.1]) hull() {
     translate([   3    ,   1    ,z]) barEnd1();
-    translate([FGleft-1,FGperp-1,z]) barEnd1();
+    translate([FGleft-(useF698?1:-4),
+               FGperp-(useF698?1:4),z]) barEnd1();
   }
   hull() {  // dig brace.  Could be gusset?
-      translate([3,1,5.7]) barEnd1();
-      translate([12,11,-.3]) barEnd1();
+     translate([3,1,5.7]) barEnd1();
+     translate([useF698?12:13+2,11,-.3]) barEnd1();
   }
-  translate([FGleft-2,FGperp-2,.3]) cylinder(r=.8,h=5,$fn=11);
   hull() {
-      translate([FGleft-7.2,FGperp-8,5.3]) barEnd1();
-      translate([14,13.5,-.3]) barEnd1();
+      translate([FGleft-(useF698?7.2:5-4),FGperp-8,5.3]) barEnd1();
+      translate([useF698?14:15.5+2.6,13.5,-.3]) barEnd1();
   }
 
   // GH braces
   hull() {
       translate([FG-8,0,-.3]) barEnd1();
-      translate([FGleft+1,FGperp-1,-.3]) barEnd1();
+      translate([FGleft+5,FGperp-4,-.3]) barEnd1();
   }
   hull() {
       translate([FG-10,0,0]) barEnd1();
-      translate([FGleft+1,FGperp-1,5.2]) barEnd1();
+      translate([FGleft+5,
+                 FGperp-4,5.2]) barEnd1();
   }
 
   hull() {    // perp brace
-      translate([FGleft,FGperp-1,5.2]) barEnd1();
+      //translate([FGleft,FGperp-1,5.2]) barEnd1();
+      translate([FGleft+4,FGperp-4,5.2]) barEnd1();
       translate([FGleft,0,0]) barEnd1();
   }
   hull() {    // perp brace
-      translate([FGleft,FGperp-1,-.3]) barEnd1();
+      //translate([FGleft,FGperp-1,-.3]) barEnd1();
+      translate([FGleft+4,FGperp-4,-.3]) barEnd1();
       translate([FGleft,0,-.3]) barEnd1();
   }
 
@@ -230,8 +245,17 @@ module foot() {
       translate([46,15,3]) barEnd1();
       translate([35, 0,0]) barEnd1();
   }
-  translate([FGleft+2,FGperp-2,.3]) cylinder(r=.6,h=5);
-  translate([FGleft,FGperp-2,.3]) cylinder(r=.6,h=5);
+
+  // out-of-plane perp braces
+  if (useF698) {
+    translate([FGleft+2,FGperp-2,.3]) cylinder(r=.6,h=5);
+    translate([FGleft,FGperp-2,.3]) cylinder(r=.6,h=5);
+    translate([FGleft-2,FGperp-2,.3]) cylinder(r=.8,h=5,$fn=11);
+  } else {
+    //translate([FGleft+1,FGperp-2,.3]) cylinder(r=.6,h=5);
+    //translate([FGleft-1,FGperp-4,.3]) cylinder(r=.8,h=5,$fn=11);
+    translate([FGleft+4,FGperp-4,.3]) cylinder(r=.8,h=5,$fn=11);
+  }
 }
 
 $fn=12;
@@ -305,17 +329,17 @@ module crankLink(dx=CD) {
 
   //translate([dx/2-1,0,0]) cube([dx-3,1.3,1.3],center=true);
   %color([0,.8,0,.6])
-  translate([dx/2-1,0,0]) rotate([0,90,0])
-     cylinder(r=.6,h=dx-3,$fn=11,center=true);
+  translate([dx/2-1-1,0,0]) rotate([0,90,0])
+     cylinder(r=.6,h=dx-3-3,$fn=11,center=true);
 
-  translate([dx,0,0]) SA8();
+  translate([dx,0,0]) SI8onBolt(); //SA8();
 }
 
 
 module EFlink() {
-  translate([EF,0,0]) SA8();
-  translate([EF/2-.4,0,0]) rotate([0,90,0])
-      cylinder(r=.8,h=EF-3,$fn=13,center=true);
+  translate([EF,0,0]) SI8onBolt(); //SA8();
+  translate([EF/2-.4-1.5,0,0]) rotate([0,90,0])
+      cylinder(r=.8,h=EF-3-3,$fn=13,center=true);
 
     // ------ tube and knee bearings
     %color([0,0,.6,.4])
@@ -384,7 +408,7 @@ module BHlinks() {
        cylinder(r=3,h=.33,$fn=36);
        translate([-8,0,0]) cylinder(r=1,h=.33);
      }
-     cylinder(r=.7,h=2,center=true);
+     cylinder(r=.4,h=2,center=true);
   }
 
   // to check dimensions
