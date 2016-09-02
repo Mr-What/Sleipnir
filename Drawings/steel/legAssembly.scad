@@ -168,7 +168,7 @@ useF698=0;
       translate([0,0,z]) cylinder(r=2.5,h=.4,$fn=24,center=true);
       translate([9,0,z])cylinder(r=1,h=.4,center=true);
     }
-    cylinder(r=.4,h=22,$fn=17,center=true);
+    #cylinder(r=.4,h=16,$fn=17,center=true);
   }
 
 
@@ -405,18 +405,40 @@ module BHlinks() {
   // H forks
   for(z=[-1.7,6.2]) translate([BH,0,z]) difference() {
      hull() {
-       cylinder(r=3,h=.33,$fn=36);
+       cylinder(r=2,h=.33,$fn=36);
        translate([-8,0,0]) cylinder(r=1,h=.33);
      }
-     cylinder(r=.4,h=2,center=true);
+     #cylinder(r=.4,h=2+6,center=true);
   }
 
   // to check dimensions
   //%translate([BH/2,0,2.4]) cube([BH,1,7.8],center=true);
 }
-module barEnd1() sphere(.8,$fn=12);
+
+
+
 // diag braces.  Try to leave fork area open to allow clearance for CH link
 module BHcrosses() {
+h1=BH-4;  // node closest to H
+b1=4;
+spread=.7;
+lo=-1.6;
+hi=6.5;
+rBar=.8;
+  hull() {
+    translate([b1, spread,lo]) barEnd1();
+    translate([h1, spread,hi]) barEnd1();    
+  }
+  hull() {
+    translate([b1,-spread,hi]) barEnd1();
+    translate([h1,-spread,lo]) barEnd1();    
+  }
+}
+
+
+/*
+// diag braces.  Try to leave fork area open to allow clearance for CH link
+module BHcrosses2() {
 h1=BH-4;  // node closest to H
 h2=h1-19;
 b2=h2-4;
@@ -442,3 +464,7 @@ rBar=.8;
     translate([b1,spread,hi]) barEnd1();    
   }
 }
+*/
+
+
+module barEnd1() sphere(.8,$fn=12);

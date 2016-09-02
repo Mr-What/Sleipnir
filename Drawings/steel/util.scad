@@ -1,7 +1,8 @@
 // Utilities for steel jansen linkage
 
 SI8onBolt();
-//translate([0,0,11]) F698();
+translate([0,0,5]) SA8();
+translate([0,0,11]) F698();
 
 module SI8onBolt() {
   translate([-7,0,0]) rotate([0,90,0])
