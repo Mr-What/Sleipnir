@@ -155,12 +155,29 @@ use <util.scad>
 module foot() {
 useF698=0;
 thin=1;
-  hull() {  // FG
-    translate([4,0,.2]) cube([4,2.5,2.5],center=true);
-    translate([FG-1.3,0,.2]) cylinder(r=1.3,h=2.6,$fn=24,center=true);
-  }
+withBrace=0;  // use wobble braces at knee as fork
+
+  // FG (shin)
+    if (withBrace) {
+      hull() {  // FG (shin)
+        translate([4,0,.2]) cube([4,2.5,2.5],center=true);
+        translate([FG-1.3,0,.2]) cylinder(r=1.3,h=2.6,$fn=24,center=true); // foot
+      }
+    } else {
+      // knee end fork cut out of square tube
+      difference() {
+        hull() {
+          cube([4,2.54,2.54],center=true);
+          translate([FG-1.3,0,.2]) cylinder(r=1.3,h=2.54,$fn=24,center=true); // foot
+        }
+
+        #cylinder(r=.4,h=4,$fn=17,center=true);
+        translate([-.5,.2,0]) cube([4,2.54,2.1],center=true);
+      }
+    }
 
   // knee braces/fork
+  *%color([0,1,1,.2])
   for (z=[-1.3,thin?1.6:7]) rotate([0,0,(z>0)?25*0:0]) difference() {
     hull() {
       // This was elongated as a brace for thin knee
@@ -283,8 +300,41 @@ thin=1;
 
 $fn=12;
 module hip() {
-  translate([DE/2,0,-.2]) rotate([0,90,0])      // top tube
-    cylinder(r=.9,h=DE-4,$fn=17,center=true);
+squareTop=1;  // 1==let top tube be square, no additional fork pieces
+
+  if (squareTop) {
+    // crank link width with flange bearings is a little over 1"
+    // so go with 1.25" square top tube
+    *difference() {
+      translate([DE/2,0,0])    // top tube
+        cube([DE+4,1.25*2.54,1.25*2.54],center=true);
+
+      translate([-1,-.3,0]) cube([5,3.2,2.8],center=true);
+      #cylinder(r=.4,h=4,$fn=12,center=true);
+      translate([DE,-.3,0]) cube([5,3.2,2.8],center=true);
+      #translate([DE,0,0]) cylinder(r=.4,h=4,$fn=12,center=true);
+    }
+
+    // Even though , technically, the crank link hits the
+    // edge with a 1" top tube, I think there is enough slop
+    // with the heim joint to use a 1" top tube anyway.
+    // also... if needed, we can shift the top tube
+    // up or down 1/8" depending in which side we are, and make it work.
+    // have slightly uneven spacers at F, and we are fine
+    difference() {
+      translate([DE/2,0,0])    // top tube
+        cube([DE+4,2.54,2.54],center=true);
+
+      translate([-1,-.3,0]) cube([5,2.6,2.2],center=true);
+      #cylinder(r=.4,h=4,$fn=12,center=true);
+      translate([DE,-.3,0]) cube([5,2.6,2.2],center=true);
+      #translate([DE,0,0]) cylinder(r=.4,h=4,$fn=12,center=true);
+    }
+
+  } else {
+    translate([DE/2,0,-.2]) rotate([0,90,0])      // top tube
+      cylinder(r=.9,h=DE-4,$fn=17,center=true);
+  }
 
   translate([DE-DEleft,-DEperp,-1.2]) difference() {
      union() {
@@ -307,12 +357,13 @@ module hip() {
      cylinder(r=3.7/2+.1,h=22,$fn=18,center=true);
   }
 
+  if (squareTop==0) {
   // use cut-out square tube (or channel) for forks, instead of all welded.
   // easier to drill and maintain aligned holes
   // 14ga roughly 2mm thick
   translate([DE,0,0]) rotate([0,0,180]) channelFork();
   channelFork();
-
+  }
 
   // extra bracing
   translate([DE/2,-15,0]) rotate([0,90,0]) cylinder(r=.8,h=35,center=true);
