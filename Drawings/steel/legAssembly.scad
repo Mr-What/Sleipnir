@@ -221,12 +221,12 @@ useF698=0;
   // GH braces
   hull() {
       translate([FG-8,0,-.3]) barEnd1();
-      translate([FGleft+5,FGperp-4,-.3]) barEnd1();
+      translate([FGleft+4,FGperp-3,-.3-1.7]) barEnd1();
   }
   hull() {
       translate([FG-10,0,0]) barEnd1();
-      translate([FGleft+5,
-                 FGperp-4,5.2]) barEnd1();
+      translate([FGleft+4,
+                 FGperp-3,5.2+2]) barEnd1();
   }
 
   hull() {    // perp brace
@@ -252,9 +252,11 @@ useF698=0;
     translate([FGleft,FGperp-2,.3]) cylinder(r=.6,h=5);
     translate([FGleft-2,FGperp-2,.3]) cylinder(r=.8,h=5,$fn=11);
   } else {
-    //translate([FGleft+1,FGperp-2,.3]) cylinder(r=.6,h=5);
-    //translate([FGleft-1,FGperp-4,.3]) cylinder(r=.8,h=5,$fn=11);
-    translate([FGleft+4,FGperp-4,.3]) cylinder(r=.8,h=5,$fn=11);
+    ////translate([FGleft+1,FGperp-2,.3]) cylinder(r=.6,h=5);
+    ////translate([FGleft-1,FGperp-4,.3]) cylinder(r=.8,h=5,$fn=11);
+    //translate([FGleft+4,FGperp-4,.3]) cylinder(r=.8,h=5,$fn=11);
+    translate([FGleft+4.5,FGperp-3.5,2.4]) rotate([0,0,142])
+      cube([.75*2.54,.75*2.54,8],center=true);
   }
 }
 
