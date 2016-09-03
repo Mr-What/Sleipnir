@@ -154,21 +154,23 @@ use <util.scad>
 
 module foot() {
 useF698=0;
+thin=1;
   hull() {  // FG
     translate([4,0,.2]) cube([4,2.5,2.5],center=true);
     translate([FG-1.3,0,.2]) cylinder(r=1.3,h=2.6,$fn=24,center=true);
   }
 
   // knee braces/fork
-  for (z=[-1.3,7]) rotate([0,0,(z>0)?25*0:0]) difference() {
+  for (z=[-1.3,thin?1.6:7]) rotate([0,0,(z>0)?25*0:0]) difference() {
     hull() {
-      // This was elongated as a brace for knee
-      //translate([-5,2,1.5*z])scale([3,5,1])cylinder(r=1,h=.4,$fn=64,center=true);
+      // This was elongated as a brace for thin knee
+      translate([-5,2,z])scale([3,5,1])cylinder(r=1,h=.4,$fn=64,center=true);
+
       // wider knee shouldn't need brace
-      translate([0,0,z]) cylinder(r=2.5,h=.4,$fn=24,center=true);
+      //translate([0,0,z]) cylinder(r=2.5,h=.4,$fn=24,center=true);
       translate([9,0,z])cylinder(r=1,h=.4,center=true);
     }
-    #cylinder(r=.4,h=16,$fn=17,center=true);
+    #cylinder(r=.4,h=thin?4:17,$fn=17,center=true);
   }
 
 
@@ -196,27 +198,46 @@ useF698=0;
       rotate([0,0,142]) SI8onBolt(); //SA8();
   }
 
-  // vertical brace extension at knee
-  translate([3.5,0,4.1]) cube([2.5,2.5,5.3],center=true);
-  hull() {  // gusset
-    translate([ 5.5,-1,1]) cylinder(r=.2,h=5.8,$fn=8);
-    translate([18, 1,0]) cylinder(r=.3,h=1  ,$fn=8);
+  if (thin==0) {
+    // vertical brace extension at knee
+    translate([3.5,0,4.1]) cube([2.5,2.5,5.3],center=true);
+    hull() {  // gusset
+      translate([ 5.5,-1,1]) cylinder(r=.2,h=5.8,$fn=8);
+      translate([18, 1,0]) cylinder(r=.3,h=1  ,$fn=8);
+    }
   }
 
   // FH segment bracing
-  for (z=[-.3,5.1]) hull() {
-    translate([   3    ,   1    ,z]) barEnd1();
-    translate([FGleft-(useF698?1:-4),
-               FGperp-(useF698?1:4),z]) barEnd1();
-  }
-  hull() {  // dig brace.  Could be gusset?
-     translate([3,1,5.7]) barEnd1();
-     translate([useF698?12:13+2,11,-.3]) barEnd1();
-  }
-  hull() {
+  if (thin) {
+    for (z=[-.3]) hull() {
+      translate([   3    ,   1    ,]) barEnd1();
+      translate([FGleft-(useF698?1:-4),
+                 FGperp-(useF698?1:4),z]) barEnd1();
+    }
+    hull() {
+      translate([FGleft+4.5,FGperp-4,6]) barEnd1();
+      translate([7,4.4,0]) barEnd1();
+    }
+
+
+  } else {
+    for (z=[-.3,5.1]) hull() {
+      translate([   3    ,   1    ,z]) barEnd1();
+      translate([FGleft-(useF698?1:-4),
+                 FGperp-(useF698?1:4),z]) barEnd1();
+    }
+
+    hull() {  // dig brace.  Could be gusset?
+       translate([3,1,5.7]) barEnd1();
+       translate([useF698?12:13+2,11,-.3]) barEnd1();
+    }
+
+    hull() {
       translate([FGleft-(useF698?7.2:5-4),FGperp-8,5.3]) barEnd1();
       translate([useF698?14:15.5+2.6,13.5,-.3]) barEnd1();
+    }
   }
+
 
   // GH braces
   hull() {
@@ -308,7 +329,7 @@ translate([co,0,0]) difference() {
   translate([-od/2,0,0]) cube([2.1*gu,len+1,od-2*gu-.05],center=true);
 
   // put hole at x=0,y=0 in part space.
-  translate([-co,0,0]) cylinder(r=hd/2,h=od+1,$fn=17,center=true);
+  #translate([-co,0,0]) cylinder(r=hd/2,h=od+1,$fn=17,center=true);
 }
 
 /*
@@ -339,8 +360,21 @@ module crankLink(dx=CD) {
 
 
 module EFlink() {
+thin=1;
+
   translate([EF,0,0]) SI8onBolt(); //SA8();
-  translate([EF/2-.4-1.5,0,0]) rotate([0,90,0])
+
+  if (thin) {
+    rotate([0,0,180]) SI8onBolt();
+
+    // main tube
+    translate([EF/2,0,0]) rotate([0,90,0])
+      cylinder(r=.8,h=EF-9,$fn=13,center=true);
+
+  } else {
+
+    // main tube
+    translate([EF/2-.4-1.5,0,0]) rotate([0,90,0])
       cylinder(r=.8,h=EF-3-3,$fn=13,center=true);
 
     // ------ tube and knee bearings
@@ -356,6 +390,7 @@ module EFlink() {
       translate([1.3,0,2*2.54/2]) cylinder(r=.2,h=2.54*3,$fn=12,center=true);
       translate([9,0,   0    ]) cylinder(r=.2,h=1,$fn=12); 
     }
+  }
 
   //translate([EF,0,0]) cylinder(r=r38,h=5,center=true);
     //                //cylinder(r=r38,h=55,center=true);
