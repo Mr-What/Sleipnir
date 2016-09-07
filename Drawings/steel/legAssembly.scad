@@ -451,59 +451,40 @@ thin=1;
 
 // this link drawn with B axle at origin, always.
 module BHlinks() {
-  difference() {  // main axle rings
-    union() {
-      // main axle tube
-      translate([0,0,2.4]) cylinder(r=2.54*1.75/2,h=13.5,$fn=36,center=true);
 
-      for(z=[-2.4,7.2]) {  // main side rails
-        hull() {
-          translate([BH-6,0,z]) barEnd1();
-          translate([   0,0,z]) barEnd1();
-        }
-      }
-
-    }
-
-    translate([0,0,2.4]) cube([5,5,7.9],center=true);
-    cylinder(r=3.7/2+.1,h=22,$fn=19,center=true);
-  }
-
+  // main bars for BH link.
+  // may want to fabricate these first, then add the extra
+  // bracing, in place, on a working (but wobbly?) leg
+  translate([0,0,7.8]) rotate([180,0,0]) BHbar();
+  translate([0,0,-3]) BHbar();
 
   // brace near axle
   translate([3.3,0,2.2]) cylinder(r=.8,h=10,$fn=19,center=true);
 
-/* get rid of fork brace.  Comes close to hitting CH cranklink.
-   let cross members hold forks apart
-  //    fork brace 
-  translate([BH-7,0,2.43]) cube([2.5,2.5,7.6],center=true);
-
-  hull() {
-    translate([   4,.7,-1.6]) barEnd1();
-    translate([BH-9,.7, 6.2]) barEnd1();    
-  }
-  hull() {
-    translate([   4,-.7, 6.2]) barEnd1();
-    translate([BH-9,-.7,-1.6]) barEnd1();    
-  }
-*/
-
   BHcrosses();
-
-  // H forks
-  for(z=[-1.7,6.2]) translate([BH,0,z]) difference() {
-     hull() {
-       cylinder(r=2,h=.33,$fn=36);
-       translate([-8,0,0]) cylinder(r=1,h=.33);
-     }
-     #cylinder(r=.4,h=2+6,center=true);
-  }
-
-  // to check dimensions
-  //%translate([BH/2,0,2.4]) cube([BH,1,7.8],center=true);
 }
 
+module BHbar() {
+  difference() {
+    union() {
+      cylinder(r=2.54*1.75/2,h=2.8,$fn=42,center=true);
+      translate([BH/2+1,0,.14]) difference() {
+        cube([BH+2,2.54,2.54],center=true);  // sq. tube
+        cube([BH+3,2.2,2.2],center=true);
 
+        // carve out for H bolt
+        translate([BH/2,0,-1.4]) rotate([0,-30,0])
+           cube([6,3,3],center=true);
+      }
+
+      // weld extra plate for strength at H node
+      translate([BH,0,2.54/2+.3]) cube([3,3,.4],center=true);
+    }
+
+    cylinder(r=3.7/2+.1,h=3,$fn=19,center=true);
+    #translate([BH,0,0]) cylinder(r=.4,h=7,$fn=13);
+  }
+}
 
 // diag braces.  Try to leave fork area open to allow clearance for CH link
 module BHcrosses() {
@@ -522,37 +503,5 @@ rBar=.8;
     translate([h1,-spread,lo]) barEnd1();    
   }
 }
-
-
-/*
-// diag braces.  Try to leave fork area open to allow clearance for CH link
-module BHcrosses2() {
-h1=BH-4;  // node closest to H
-h2=h1-19;
-b2=h2-4;
-b1=4;
-spread=.7;
-lo=-1.6;
-hi=6.5;
-rBar=.8;
-  hull() {
-    translate([h2, spread,lo]) barEnd1();
-    translate([h1, spread,hi]) barEnd1();    
-  }
-  hull() {
-    translate([h2,-spread,hi]) barEnd1();
-    translate([h1,-spread,lo]) barEnd1();    
-  }
-  hull() {
-    translate([b1,-spread,lo]) barEnd1();
-    translate([b2,-spread,hi]) barEnd1();    
-  }
-  hull() {
-    translate([b2,spread,lo]) barEnd1();
-    translate([b1,spread,hi]) barEnd1();    
-  }
-}
-*/
-
 
 module barEnd1() sphere(.8,$fn=12);
