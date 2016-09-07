@@ -156,6 +156,7 @@ module foot() {
 useF698=0;
 thin=1;
 withBrace=0;  // use wobble braces at knee as fork
+HforkAngle=155;  // angle of SI8 fork at H
 
   // FG (shin)
     if (withBrace) {
@@ -212,7 +213,7 @@ withBrace=0;  // use wobble braces at knee as fork
     // use some washers/spacers to get heim a few mm inside fork, to allow
     // room for connecting rod to clear fork
     for (z=[-.7+.3,5.6-.3]) translate([FGleft,FGperp,z])
-      rotate([0,0,142]) SI8onBolt(); //SA8();
+      rotate([0,0,HforkAngle]) SI8onBolt(); //SA8();
   }
 
   if (thin==0) {
@@ -226,16 +227,10 @@ withBrace=0;  // use wobble braces at knee as fork
 
   // FH segment bracing
   if (thin) {
-    for (z=[-.3]) hull() {
-      translate([   3    ,   1    ,]) barEnd1();
-      translate([FGleft-(useF698?1:-4),
-                 FGperp-(useF698?1:4),z]) barEnd1();
+    for(z=[0,1]) hull() {
+      translate([FGleft+4,FGperp-3,z?-2.5:7]) barEnd1();
+      translate([    3     ,   0    ,z?-1:1]) barEnd1();
     }
-    hull() {
-      translate([FGleft+4.5,FGperp-4,6]) barEnd1();
-      translate([7,4.4,0]) barEnd1();
-    }
-
 
   } else {
     for (z=[-.3,5.1]) hull() {
@@ -256,31 +251,19 @@ withBrace=0;  // use wobble braces at knee as fork
   }
 
 
-  // GH braces
-  hull() {
-      translate([FG-8,0,-.3]) barEnd1();
-      translate([FGleft+4,FGperp-3,-.3-1.7]) barEnd1();
-  }
-  hull() {
-      translate([FG-10,0,0]) barEnd1();
-      translate([FGleft+4,
-                 FGperp-3,5.2+2]) barEnd1();
+  for (z=[0,1]) hull() {  // GH braces
+    translate([FG-9,0,z?-1:1]) barEnd1();
+    translate([FGleft+6,FGperp-1.5,z?-2:6.7]) barEnd1();
   }
 
-  hull() {    // perp brace
-      //translate([FGleft,FGperp-1,5.2]) barEnd1();
-      translate([FGleft+4,FGperp-4,5.2]) barEnd1();
-      translate([FGleft,0,0]) barEnd1();
-  }
-  hull() {    // perp brace
-      //translate([FGleft,FGperp-1,-.3]) barEnd1();
-      translate([FGleft+4,FGperp-4,-.3]) barEnd1();
-      translate([FGleft,0,-.3]) barEnd1();
+  for (z=[0,1]) hull() {    // perp brace
+     translate([FGleft+5.5,FGperp-3,z? 7:-2]) barEnd1();
+     translate([FGleft+5.5,   0    ,z?.5:-1]) barEnd1();
   }
 
   // extra truss braces
   hull() {
-      translate([46,15,3]) barEnd1();
+      translate([47,16,4.2]) barEnd1();
       translate([35, 0,0]) barEnd1();
   }
 
@@ -293,8 +276,9 @@ withBrace=0;  // use wobble braces at knee as fork
     ////translate([FGleft+1,FGperp-2,.3]) cylinder(r=.6,h=5);
     ////translate([FGleft-1,FGperp-4,.3]) cylinder(r=.8,h=5,$fn=11);
     //translate([FGleft+4,FGperp-4,.3]) cylinder(r=.8,h=5,$fn=11);
-    translate([FGleft+4.5,FGperp-3.5,2.4]) rotate([0,0,142])
-      cube([.75*2.54,.75*2.54,8],center=true);
+    translate([FGleft,FGperp,2.4]) rotate([0,0,HforkAngle])
+       translate([-4.8,0,0])
+          cube([.75*2.54,.75*2.54,10],center=true);
   }
 }
 
@@ -458,10 +442,13 @@ module BHlinks() {
   translate([0,0,7.8]) rotate([180,0,0]) BHbar();
   translate([0,0,-3]) BHbar();
 
-  // brace near axle
-  translate([3.3,0,2.2]) cylinder(r=.8,h=10,$fn=19,center=true);
+  // do these last, after leg assembly, improvised
+  color([0,.5,1,.5]) {
+    BHcrosses();
 
-  BHcrosses();
+    // brace near axle
+    translate([3.3,0,2.2]) cylinder(r=.8,h=10,$fn=19,center=true);
+  }
 }
 
 module BHbar() {
