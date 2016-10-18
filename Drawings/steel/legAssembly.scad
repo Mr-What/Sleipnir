@@ -19,6 +19,8 @@ echo(str("FGleft=",FGleft,"   FGperp=",FGperp));
 //r38 = (3/8)*2.54/2;  // radius of 3/8" bolt
 
 a=360*$t;
+if(0) {
+
 legAssembly(a,0);
 mirror([1,0,0]) legAssembly(180-a,1.3);
 
@@ -36,6 +38,14 @@ for(x=[-1,1]) translate([x*Bx,0,0]) difference() {
 %translate([0,-93,0]) cube([200,2,2],center=true); // ground
 %color([0,0,1,.2]) translate([0,0,-8])
    cube([114,1.75*2.54,1.75*2.54],center=true);
+
+} else {
+//jigFoot();
+//jigHip();
+//jigBH();
+//jigCrankLink();
+jigEF();
+}
 
 // -----------------------------------------------------------------
 
@@ -492,3 +502,78 @@ rBar=.8;
 }
 
 module barEnd1() sphere(.8,$fn=12);
+
+module jigFoot() {
+  %translate([0,0,2.54/2]) foot();
+
+  color([.6,.6,.8,1]) {   // extrusions
+    translate([-5,-1,-2]) cube([FG+10,4,2]);
+    translate([FGleft-1,0,-2]) cube([4,FGperp+4,2]);
+  }
+
+  // peg to hold 1" tube segment for foot
+  translate([FG-(2.54/2),0,0]) cylinder(r=1.9/2,h=8,$fn=32);
+
+  cylinder(r=.4,h=8,$fn=16);  // alignment peg for F joint
+
+  // hamstring alignment pin
+  translate([FGleft,FGperp,0]) cylinder(r=.4,h=10,$fn=16);
+}
+module jigHip() {
+  %translate([0,0,2.54/2]) hip();
+
+  color([.6,.6,.8,1]) {   // extrusions
+    translate([-5,-1,-2]) cube([DE+10,4,2]);
+    translate([DE-DEleft-1,-DEperp-5,-2]) cube([4,DEperp+4,2]);
+  }
+
+  translate([DE,0,0]) cylinder(r=.4,h=8,$fn=16);  // D bolt hole alignment
+  cylinder(r=.4,h=8,$fn=16);  // E bolt hole alignment
+
+  // Axis bearing alignment.  Use actual bearings seated in tube
+  translate([DE-DEleft,-DEperp,0]) {
+     difference() { // peg with 5mm bolt hole to align bearings
+       cylinder(r=2.5/2,h=10,$fn=36);
+       cylinder(r=.5/2,h=11,$fn=16);
+     }
+
+     color([.3,.3,.8,.9]) for(z=[.4,6.9]) translate([0,0,z]) bb6805();  // bearings
+  }
+}
+module jigBH() {
+  %translate([0,0,2.54/2+.4]) rotate([180,0,0]) BHbar();
+
+  color([.6,.6,.8,1]) {   // extrusions
+    translate([-5,-1,-2]) cube([BH+10,4,2]);
+  }
+
+  translate([BH,0,0]) cylinder(r=.4,h=8,$fn=16);  // H bolt hole alignment
+
+  // Axis bearing alignment.  Use actual bearings seated in tube
+  difference() { // peg with 5mm bolt hole to align bearings
+       cylinder(r=2.5/2,h=5,$fn=36);
+       cylinder(r=.5/2 ,h=6,$fn=16);
+  }
+  color([.3,.3,.8,.9]) for(z=[.6,2.7]) translate([0,0,z]) bb6805();  // bearings
+}
+module jigCrankLink() {
+  %translate([0,0,.65]) crankLink(CD);
+
+  color([.6,.6,.8,1]) {   // extrusions
+    translate([-5,-1,-2]) cube([CD+10,4,2]);
+  }
+
+  translate([CD,0,0]) cylinder(r=.4,h=8,$fn=16);  // heim joint alignment 
+  cylinder(r=.4,h=8,$fn=16);  // pedal spindle proxy
+}
+module jigEF() {
+  %translate([0,0,.7]) EFlink();
+
+  color([.6,.6,.8,1]) {   // extrusions
+    translate([-5,-1,-2]) cube([EF+10,4,2]);
+  }
+
+  translate([EF,0,0]) cylinder(r=.4,h=5,$fn=16);  // heim joint alignment 
+  cylinder(r=.4,h=5,$fn=16);
+}
+

@@ -66,5 +66,11 @@ module F608 () scale(.1) difference() { union() {
   cylinder(r=4,h=8,$fn=18,center=true);
 }
 
+// 6805 bearing, common for bicycle bottom-brackets
+module bb6805() scale(.1) difference() {
+  cylinder(r=37/2,h=7,$fn=48,center=true);
+  cylinder(r=25/2,h=8,$fn=16,center=true);
+}
+
 
 
